@@ -6,10 +6,10 @@ gemspec
 
 group :development do
   # TODO move to gemspec when published as gems
-  gem 'i2w-result', github: 'i2w/i2w-result'
+  gem 'i2w-result', github: 'i2w/i2w-result', branch: 'main'
 
   # this is a dev dependency
-  gem 'i2w-repo', github: 'i2w/i2w-repo'
+  gem 'i2w-repo', github: 'i2w/i2w-repo', branch: 'main'
 end
 
 # To use a debugger
