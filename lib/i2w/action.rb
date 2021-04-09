@@ -2,6 +2,7 @@
 
 require 'i2w/result'
 require_relative 'action/version'
+require_relative 'action/actions'
 
 module I2w
   # Base class for actions, provides #repo, #input_class, #validate, and #transaction private API methods for
