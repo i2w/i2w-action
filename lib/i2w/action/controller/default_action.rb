@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module I2w
-  module Action
+  class Action
     module Controller
       # provides support for looking up and using default (conventionally named) Actions in controllers
       #

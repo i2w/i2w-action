@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module I2w
-  module Action
+  class Action
     module Controller
       module CrudActions
         extend ActiveSupport::Concern

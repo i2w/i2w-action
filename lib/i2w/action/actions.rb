@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module I2w
-  module Action
+  class Action
     # example implementations of standard CRUD actions
     #
     # You can help yourself to these implementations as follows:

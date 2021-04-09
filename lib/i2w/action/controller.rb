@@ -4,7 +4,7 @@ require_relative 'controller/crud_actions'
 require_relative 'controller/default_action'
 
 module I2w
-  module Action
+  class Action
     module Controller
     end
   end
