@@ -31,7 +31,7 @@ module I2w
       # Default implementation of the new action
       module New
         def call
-          Result.success input_class.new
+          Result.success input_class.from({})
         end
       end
 

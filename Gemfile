@@ -7,6 +7,7 @@ gemspec
 group :development do
   # TODO move to gemspec when published as gems
   gem 'i2w-result', github: 'i2w/i2w-result', branch: 'main'
+  gem 'i2w-human', github: 'i2w/i2w-human', branch: 'main'
 
   # this is a dev dependency
   gem 'i2w-repo', github: 'i2w/i2w-repo', branch: 'main'

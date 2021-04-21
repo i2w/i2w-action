@@ -27,9 +27,10 @@ module I2w
           action_class.new(repo: repo, input_class: input_class).call(...)
         end
 
+        # TODO: memoize on class with cache based on action_name
         def action_class
           ["#{action_name}_#{model_name}_action", "#{action_name}_action"].each do |candidate|
-            return candidate.classify.constantize
+            return "#{self.class.module_parent}::#{candidate.classify}".constantize
           rescue NameError
             next
           end
@@ -37,7 +38,7 @@ module I2w
         end
 
         def default_input
-          input_class.new(default_permitted_params)
+          input_class.new(**default_permitted_params.to_h.symbolize_keys)
         end
 
         def default_permitted_params
@@ -63,7 +64,7 @@ module I2w
           attr_writer :model_name, :repo, :input_class
 
           def associated_class(suffix)
-            "#{model_name.to_s.camelize}#{suffix}".constantize
+            "#{module_parent}::#{model_name.to_s.camelize}#{suffix}".constantize
           end
         end
       end

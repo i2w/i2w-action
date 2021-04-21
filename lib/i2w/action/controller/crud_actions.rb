@@ -17,7 +17,7 @@ module I2w
             actions = %i[index show new edit create update destroy] - except
             actions = only - actions if only.any?
 
-            actions.each { |action| include action.to_s.classify.constantize }
+            actions.each { |action| include const_get(action.to_s.classify) }
           end
         end
 
@@ -58,7 +58,7 @@ module I2w
           private
 
           def create_success(model)
-            redirect_to (respond_to?(:show) ? model : :index), notice: "Created #{Human[model]}"
+            redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Created #{Human[model]}"
           end
 
           def create_failure(input, _failure, errors)
@@ -79,7 +79,7 @@ module I2w
           private
 
           def update_success(model)
-            redirect_to (respond_to?(:show) ? model : :index), notice: "Updated #{Human[model]}"
+            redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Updated #{Human[model]}"
           end
 
           def update_failure(input, _failure, errors)
@@ -100,11 +100,11 @@ module I2w
           private
 
           def destroy_success(model)
-            redirect_to :index, notice: "Destroyed #{Human[model]}"
+            redirect_to action: :index, notice: "Destroyed #{Human[model]}"
           end
 
           def destroy_failure(_failure, errors)
-            redirect_to :index, notice: "Destroy failed: #{Human[errors]}"
+            redirect_to action: :index, notice: "Destroy failed: #{Human[errors]}"
           end
         end
       end
