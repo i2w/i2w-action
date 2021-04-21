@@ -38,7 +38,7 @@ module I2w
         end
 
         def default_input
-          input_class.new(**default_permitted_params.to_h.symbolize_keys)
+          input_class.new(default_permitted_params)
         end
 
         def default_permitted_params
@@ -47,17 +47,11 @@ module I2w
 
         # class interface
         module ClassMethods
-          def model_name
-            @model_name ||= controller_name.singularize.to_sym
-          end
+          def model_name = @model_name ||= controller_name.singularize.to_sym
 
-          def repo
-            @repo ||= associated_class('Repo')
-          end
+          def repo = @repo ||= associated_class('Repo')
 
-          def input_class
-            @input_class ||= associated_class('Input')
-          end
+          def input_class = @input_class ||= associated_class('Input')
 
           private
 

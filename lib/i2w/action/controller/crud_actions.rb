@@ -47,11 +47,13 @@ module I2w
 
         module Create
           def create
-            case default_action(input = default_input)
-            in :success, model
-              create_success(model)
-            in :failure, failure, errors
-              create_failure(input, failure, errors)
+            @input = default_input
+            result = default_action(@input)
+
+            if result.success?
+              create_success(result.value)
+            else
+              create_failure(@input, result.errors)
             end
           end
 
@@ -61,18 +63,21 @@ module I2w
             redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Created #{Human[model]}"
           end
 
-          def create_failure(input, _failure, errors)
-            render :new, assigns: { errors: errors, input: input }
+          def create_failure(input, errors)
+            @input.errors.copy!(errors)
+            render :new
           end
         end
 
         module Update
           def update
-            case default_action(params[:id], input = default_input)
-            in :success, model
-              update_success(model)
-            in :failure, failure, errors
-              update_failure(input, failure, errors)
+            @input = default_input
+            result = default_action(params[:id], @input)
+
+            if result.success?
+              update_success(result.value)
+            else
+              update_failure(@input, result.errors)
             end
           end
 
@@ -82,18 +87,20 @@ module I2w
             redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Updated #{Human[model]}"
           end
 
-          def update_failure(input, _failure, errors)
-            render :edit, assigns: { errors: errors, input: input }
+          def update_failure(input, errors)
+            @input.errors.copy!(errors)
+            render :edit
           end
         end
 
         module Destroy
           def destroy
-            case default_action(params[:id])
-            in :success, model
-              destroy_success(model)
-            in :failure, failure, errors
-              destroy_failure(failure, errors)
+            result = default_action(params[:id])
+
+            if result.success?
+              destroy_success(result.value)
+            else
+              destroy_failure(errors)
             end
           end
 
@@ -103,7 +110,7 @@ module I2w
             redirect_to action: :index, notice: "Destroyed #{Human[model]}"
           end
 
-          def destroy_failure(_failure, errors)
+          def destroy_failure(errors)
             redirect_to action: :index, notice: "Destroy failed: #{Human[errors]}"
           end
         end
