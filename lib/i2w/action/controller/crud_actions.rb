@@ -47,13 +47,13 @@ module I2w
 
         module Create
           def create
-            @input = default_input
-            result = default_action(@input)
+            input = default_input
+            result = default_action(input)
 
             if result.success?
               create_success(result.value)
             else
-              create_failure(@input, result.errors)
+              create_failure(input, result.errors)
             end
           end
 
@@ -64,20 +64,20 @@ module I2w
           end
 
           def create_failure(input, errors)
-            @input.errors.copy!(errors)
-            render :new
+            input.errors = errors
+            render :new, assigns: { input: input }
           end
         end
 
         module Update
           def update
-            @input = default_input
-            result = default_action(params[:id], @input)
+            input = default_input
+            result = default_action(params[:id], input)
 
             if result.success?
               update_success(result.value)
             else
-              update_failure(@input, result.errors)
+              update_failure(input, result.errors)
             end
           end
 
@@ -88,8 +88,8 @@ module I2w
           end
 
           def update_failure(input, errors)
-            @input.errors.copy!(errors)
-            render :edit
+            input.errors = errors
+            render :edit, assigns: { input: input }
           end
         end
 
