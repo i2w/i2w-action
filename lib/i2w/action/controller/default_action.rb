@@ -29,12 +29,16 @@ module I2w
 
         # TODO: memoize on class with cache based on action_name
         def action_class
-          ["#{action_name}_#{model_name}_action", "#{action_name}_action"].each do |candidate|
+          action_class_candidates.each do |candidate|
             return "#{self.class.module_parent}::#{candidate.classify}".constantize
           rescue NameError
             next
           end
-          raise NameError, "Couldn't find action class for #{action_name} #{model_name}"
+          raise NameError, "Couldn't find action class for #{action_name} #{model_name} in #{action_class_candidates}"
+        end
+
+        def action_class_candidates
+          ["#{controller_name}/#{action_name}_action", "#{action_name}_action"]
         end
 
         def default_input
