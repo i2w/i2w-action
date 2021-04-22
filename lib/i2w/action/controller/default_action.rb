@@ -9,11 +9,11 @@ module I2w
       #
       #   default_action(input)
       #
-      # will instantiate a CreatePersonAction as follows
+      # will instantiate an action as follows:
       #
-      #   action = CreatePersonAction.new(repo: PersonRepo, input_class: PersonInput)
+      #   action = People::CreateAction.new(repo: PersonRepo, input_class: PersonInput)
       #
-      # and call it with the arguments, ie
+      # and call it with the arguments, i.e.
       #
       #   action.call(input)
       module DefaultAction
