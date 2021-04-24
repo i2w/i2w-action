@@ -3,19 +3,26 @@
 require 'i2w/result'
 require_relative 'action/version'
 require_relative 'action/actions'
+require_relative 'action/repo_result'
 
 module I2w
-  # Base class for actions, provides #repo, #input_class, #validate, and #transaction private API methods for
-  # use in #call method
+  # Base class for actions
   class Action
-    def initialize(repo: self.class.repo, input_class: self.class.input_class)
-      @repo = repo
+    def initialize(repo_class: self.class.repo_class, input_class: self.class.input_class)
+      @repo_class = repo_class
       @input_class = input_class
     end
 
     private
 
-    attr_reader :repo, :input_class
+    attr_reader :repo_class, :input_class
+
+    # returns a proxy for repository methods, wrapped in repo_result, which turns models into success monads,
+    # and handles a variety of active record errors as failure monads
+    def repo = @repo ||= RepoResult::Proxy.new(repo_class)
+
+    # return the value of the block in a result monad, handling repo errors as failure monads
+    def repo_result(...) = RepoResult.new.call(...)
 
     # returns Result.success(valid input) or Result.failure(:invalid, errors)
     def validate(input)
@@ -24,48 +31,30 @@ module I2w
       Result.failure(:invalid, input.errors)
     end
 
-    # wrap in a repo transaction, and additionally rollback if the result is a failure
+    # wrap in a repo_class transaction, and additionally rollback if the result is a failure
     def transaction
       result = nil
-      repo.transaction do
+      repo_class.transaction do
         result = yield
-        repo.rollback! if result.failure?
+        repo_class.rollback! if result.failure?
       end
       result
     end
 
     class << self
-      def call(...)
-        new.call(...)
-      end
+      def call(...) = new.call(...)
 
-      attr_writer :action_name, :repo, :input_class
+      attr_writer :repo_class, :input_class
 
-      def action_name
-        @action_name ||= default_action_name
-      end
+      def repo_class = @repo_class ||= associated_class('Repo')
 
-      def repo
-        @repo ||= associated_class('Repo')
-      end
-
-      def input_class
-        @input_class ||= associated_class('Input')
-      end
+      def input_class = @input_class ||= associated_class('Input')
 
       private
 
-      # By default, the action name is the first word of the demodulized class name, as a symbol
-      def default_action_name
-        name.demodulize.underscore.split('_').first.to_sym
-      end
-
-      # Remove the action_name and replace Action with the suffix
+      # The model name is assumed to be the module parent, singularized
       def associated_class(suffix)
-        *nesting, name = self.name.split('::')
-        name = name.sub(/\A#{action_name.to_s.camelize}/, '')
-        name = name.sub(/Action\z/, suffix)
-        [*nesting, name].join('::').constantize
+        "#{module_parent.name.singularize}#{suffix}".constantize
       end
     end
   end

@@ -17,7 +17,7 @@ module I2w
       # Default implementation of the index action
       module Index
         def call
-          Result.success repo.all
+          repo.all
         end
       end
 

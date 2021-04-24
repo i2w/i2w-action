@@ -21,10 +21,10 @@ module I2w
 
         private
 
-        delegate :repo, :input_class, :model_name, to: 'self.class'
+        delegate :repo_class, :input_class, :model_name, to: 'self.class'
 
         def default_action(...)
-          action_class.new(repo: repo, input_class: input_class).call(...)
+          action_class.new(repo_class: repo_class, input_class: input_class).call(...)
         end
 
         # TODO: memoize on class with cache based on action_name
@@ -53,13 +53,13 @@ module I2w
         module ClassMethods
           def model_name = @model_name ||= controller_name.singularize.to_sym
 
-          def repo = @repo ||= associated_class('Repo')
+          def repo_class = @repo_class ||= associated_class('Repo')
 
           def input_class = @input_class ||= associated_class('Input')
 
           private
 
-          attr_writer :model_name, :repo, :input_class
+          attr_writer :model_name, :repo_class, :input_class
 
           def associated_class(suffix)
             "#{module_parent}::#{model_name.to_s.camelize}#{suffix}".constantize

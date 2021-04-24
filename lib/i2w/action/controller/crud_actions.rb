@@ -7,12 +7,12 @@ module I2w
         extend ActiveSupport::Concern
 
         module ClassMethods
-          def crud_actions(model_name = nil, repo: nil, input_class: nil, only: [], except: [])
+          def crud_actions(model_name = nil, repo_class: nil, input_class: nil, only: [], except: [])
             include DefaultAction
 
+            self.repo_class = repo_class unless repo_class.nil?
             self.model_name = model_name unless model_name.nil?
             self.input_class = input_class unless input_class.nil?
-            self.repo = repo unless repo.nil?
 
             actions = %i[index show new edit create update destroy] - except
             actions = only - actions if only.any?
@@ -107,11 +107,11 @@ module I2w
           private
 
           def destroy_success(model)
-            redirect_to action: :index, notice: "Destroyed #{Human[model]}"
+            redirect_to url_for(action: :index), notice: "Destroyed #{Human[model]}"
           end
 
           def destroy_failure(errors)
-            redirect_to action: :index, notice: "Destroy failed: #{Human[errors]}"
+            redirect_to url_for(action: :index), notice: "Destroy failed: #{Human[errors]}"
           end
         end
       end
