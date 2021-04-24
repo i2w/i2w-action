@@ -26,9 +26,7 @@ module I2w
 
     # returns Result.success(valid input) or Result.failure(:invalid, errors)
     def validate(input)
-      return Result.success(input) if input.valid?
-
-      Result.failure(:invalid, input.errors)
+      input.valid? ? Result.success(input) : Result.failure(:invalid, input.errors)
     end
 
     # wrap in a repo_class transaction, and additionally rollback if the result is a failure
