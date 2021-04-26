@@ -17,8 +17,8 @@ module I2w
 
     attr_reader :repo_class, :input_class
 
-    # returns a proxy for repository methods, wrapped in repo_result, which turns models into success monads,
-    # and handles a variety of active record errors as failure monads
+    # returns a proxy for repository methods, which wraps calls in repo_result,
+    # which turns models into success monads, and handles a variety of active record errors as failure monads
     def repo = @repo ||= RepoResult::Proxy.new(repo_class)
 
     # return the value of the block in a result monad, handling repo errors as failure monads
@@ -29,7 +29,7 @@ module I2w
       input.valid? ? Result.success(input) : Result.failure(:invalid, input.errors)
     end
 
-    # wrap in a repo_class transaction, and additionally rollback if the result is a failure
+    # yield in a repo_class transaction, and automatically rollback if the result is a failure
     def transaction
       result = nil
       repo_class.transaction do

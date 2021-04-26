@@ -23,25 +23,49 @@ module I2w
 
         module Index
           def index
-            @models = default_action.value
+            index_response default_action
+          end
+
+          private
+
+          def index_response(result)
+            @models = result.value
           end
         end
 
         module Show
           def show
-            @model = default_action(params[:id]).value
+            show_response default_action(params[:id])
+          end
+
+          private
+
+          def show_response(result)
+            @model = result.value
           end
         end
 
         module New
           def new
-            @input = default_action.value
+            new_response default_action
+          end
+
+          private
+
+          def new_response(result)
+            @input = result.value
           end
         end
 
         module Edit
           def edit
-            @input = default_action(params[:id]).value
+            edit_response default_action(params[:id])
+          end
+
+          private
+
+          def edit_response(result)
+            @input = result.value
           end
         end
 
@@ -49,15 +73,18 @@ module I2w
           def create
             input = default_input
             result = default_action(input)
+            create_response(input, result)
+          end
 
+          private
+
+          def create_response(input, result)
             if result.success?
               create_success(result.value)
             else
               create_failure(input, result.errors)
             end
           end
-
-          private
 
           def create_success(model)
             redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Created #{Human[model]}"
@@ -73,15 +100,18 @@ module I2w
           def update
             input = default_input
             result = default_action(params[:id], input)
+            update_response(input, result)
+          end
 
+          private
+
+          def update_response(input, result)
             if result.success?
               update_success(result.value)
             else
               update_failure(input, result.errors)
             end
           end
-
-          private
 
           def update_success(model)
             redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Updated #{Human[model]}"
@@ -95,16 +125,18 @@ module I2w
 
         module Destroy
           def destroy
-            result = default_action(params[:id])
-
-            if result.success?
-              destroy_success(result.value)
-            else
-              destroy_failure(errors)
-            end
+            destory_response default_action(params[:id])
           end
 
           private
+
+          def destory_response(result)
+            if result.success?
+              destroy_success(result.value)
+            else
+              destroy_failure(result.errors)
+            end
+          end
 
           def destroy_success(model)
             redirect_to url_for(action: :index), notice: "Destroyed #{Human[model]}"
