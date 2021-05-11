@@ -10,7 +10,8 @@ group :development do
   gem 'i2w-human', github: 'i2w/i2w-human', branch: 'main'
 
   # this is a dev dependency
-  gem 'i2w-repo', github: 'i2w/i2w-repo', branch: 'main'
+  # gem 'i2w-repo', github: 'i2w/i2w-repo', branch: 'main'
+  gem 'i2w-repo', path: '../i2w-repo'
 end
 
 # To use a debugger

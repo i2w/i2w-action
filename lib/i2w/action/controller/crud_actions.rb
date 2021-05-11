@@ -7,11 +7,11 @@ module I2w
         extend ActiveSupport::Concern
 
         module ClassMethods
-          def crud_actions(model_name = nil, repo_class: nil, input_class: nil, only: [], except: [])
-            include DefaultAction
+          def crud_actions(model_class = nil, repository_class: nil, input_class: nil, only: [], except: [])
+            include Controller
 
-            self.repo_class = repo_class unless repo_class.nil?
-            self.model_name = model_name unless model_name.nil?
+            self.repository_class = repository_class unless repository_class.nil?
+            self.model_class = model_class unless model_class.nil?
             self.input_class = input_class unless input_class.nil?
 
             actions = %i[index show new edit create update destroy] - except
@@ -23,7 +23,7 @@ module I2w
 
         module Index
           def index
-            index_response default_action
+            index_response action(:index).call
           end
 
           private
@@ -35,7 +35,7 @@ module I2w
 
         module Show
           def show
-            show_response default_action(params[:id])
+            show_response action(:show).call(params[:id])
           end
 
           private
@@ -47,7 +47,7 @@ module I2w
 
         module New
           def new
-            new_response default_action
+            new_response action(:new).call
           end
 
           private
@@ -59,7 +59,7 @@ module I2w
 
         module Edit
           def edit
-            edit_response default_action(params[:id])
+            edit_response action(:edit).call(params[:id])
           end
 
           private
@@ -71,61 +71,69 @@ module I2w
 
         module Create
           def create
-            input = default_input
-            result = default_action(input)
-            create_response(input, result)
+            create_response action(:create).call(action_attributes)
           end
 
           private
 
-          def create_response(input, result)
+          def create_response(result)
             if result.success?
               create_success(result.value)
             else
-              create_failure(input, result.errors)
+              create_failure(result.failure)
             end
           end
 
           def create_success(model)
-            redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Created #{Human[model]}"
+            @model = model
+            flash[:notice] = "Created #{Human[@model]}"
+
+            respond_to do |format|
+              format.turbo_stream
+              format.html { redirect_to(respond_to?(:show) ? @model : { action: :index }) }
+            end
           end
 
-          def create_failure(input, errors)
-            input.errors = errors
-            render :new, assigns: { input: input }
+          def create_failure(input)
+            @input = input
+            render :new
           end
         end
 
         module Update
           def update
-            input = default_input
-            result = default_action(params[:id], input)
-            update_response(input, result)
+            update_response action(:update).call(params[:id], action_attributes)
           end
 
           private
 
-          def update_response(input, result)
+          def update_response(result)
             if result.success?
               update_success(result.value)
             else
-              update_failure(input, result.errors)
+              update_failure(result.failure)
             end
           end
 
           def update_success(model)
-            redirect_to (respond_to?(:show) ? model : { action: :index }), notice: "Updated #{Human[model]}"
+            @model = model
+            flash[:notice] = "Updated #{Human[@model]}"
+
+            respond_to do |format|
+              format.turbo_stream
+              format.html { redirect_to (respond_to?(:show) ? @model : { action: :index }) }
+            end
           end
 
-          def update_failure(input, errors)
-            input.errors = errors
-            render :edit, assigns: { input: input }
+          def update_failure(input)
+            @input = input
+            render :edit
           end
         end
 
         module Destroy
           def destroy
-            destory_response default_action(params[:id])
+            destory_response action(:destroy).call(params[:id])
           end
 
           private
@@ -134,16 +142,28 @@ module I2w
             if result.success?
               destroy_success(result.value)
             else
-              destroy_failure(result.errors)
+              destroy_failure(result.failure)
             end
           end
 
           def destroy_success(model)
-            redirect_to url_for(action: :index), notice: "Destroyed #{Human[model]}"
+            @model = model
+            flash[:notice] = "Destroyed #{Human[model]}"
+
+            respond_to do |format|
+              format.turbo_stream
+              format.html { redirect_to url_for(action: :index) }
+            end
           end
 
-          def destroy_failure(errors)
-            redirect_to url_for(action: :index), notice: "Destroy failed: #{Human[errors]}"
+          def destroy_failure(failure)
+            @errors = failure.errors
+            flash[:alert] = "Destroy failed: #{Human[@errors]}"
+
+            respond_to do |format|
+              format.turbo_stream
+              format.html { redirect_to url_for(action: :index) }
+            end
           end
         end
       end

@@ -24,7 +24,7 @@ module I2w
       # Default implementation of the new action
       module Show
         def call(id)
-          repo.find(id)
+          repo.find id: id
         end
       end
 
@@ -38,28 +38,59 @@ module I2w
       # Default implementation of the edit action
       module Edit
         def call(id)
-          repo.find(id).and_then { |model| input_class.from(model) }
+          repo.find(id: id).and_then { |model| input_class.new(model) }
         end
       end
 
       # default implementation of the create action
       module Create
-        def call(input)
-          validate(input).and_then { |valid_input| repo.create(valid_input) }
+        def call(attributes)
+          validate(attributes).and_then { |valid| repo.create input: valid }
         end
       end
 
       # Default implementation of the update action
       module Update
-        def call(id, input)
-          validate(input).and_then { |valid_input| repo.update(id, valid_input) }
+        # include Result::Call
+        #
+        # def call(id, attributes)
+        #   valid = value validate(attributes)
+        #   repo.update id: id, input: valid
+        # end
+
+        def call(id, attributes)
+          validate(attributes).and_then { |valid| repo.update id: id, input: valid }
+        end
+      end
+
+      # Implementation of patch, which is like update, but has partial input which is patched onto the existing
+      # before validation
+      module Patch
+        # extend ActiveSupport::Concern
+        # 
+        # included do
+        #   include Result::Call
+        #   include Action::Transaction
+        # end
+        #
+        # def call(id, patch)
+        #   model = value repo.find(id)
+        #   value validate(**model, **patch)
+        #   repo.update id: id, input: patch
+        # end
+        def call(id, patch)
+          transaction do
+            Result[id].and_then { |id| repo.find id: id }
+                      .and_then { |model| validate(**model, **patch) }
+                      .and_then { repo.update id: id, input: patch }
+          end
         end
       end
 
       # Default implementation of the destroy action
       module Destroy
         def call(id)
-          repo.destroy(id)
+          repo.destroy id: id
         end
       end
     end

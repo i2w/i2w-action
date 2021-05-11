@@ -1,16 +1,22 @@
 GIT
-  remote: https://github.com/i2w/i2w-repo.git
-  revision: 5e8031caf046b3e73060949a75f330243c08b0d5
+  remote: https://github.com/i2w/i2w-human.git
+  revision: bf21ce2a940f28c1701d2b212f5a14e5247b3e5a
   branch: main
   specs:
-    i2w-repo (0.1.0)
+    i2w-human (0.1.0)
+      activesupport (~> 6.1.3, >= 6.1.3.1)
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: a2d14dfc63509f26536d1d0c2447e02f3c68068a
+  revision: 4f09b55c9659729da8623bbd239de9a320f5fe20
   branch: main
   specs:
     i2w-result (0.1.0)
+
+PATH
+  remote: ../i2w-repo
+  specs:
+    i2w-repo (0.1.0)
 
 PATH
   remote: .
@@ -151,6 +157,7 @@ PLATFORMS
 
 DEPENDENCIES
   i2w-action!
+  i2w-human!
   i2w-repo!
   i2w-result!
 
