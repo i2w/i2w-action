@@ -6,10 +6,12 @@ module I2w
       module CrudActions
         extend ActiveSupport::Concern
 
+        included do
+          include Controller
+        end
+
         module ClassMethods
           def crud_actions(model_class = nil, repository_class: nil, input_class: nil, only: [], except: [])
-            include Controller
-
             self.repository_class = repository_class unless repository_class.nil?
             self.model_class = model_class unless model_class.nil?
             self.input_class = input_class unless input_class.nil?
@@ -29,7 +31,7 @@ module I2w
           private
 
           def index_response(result)
-            @models = result.value
+            render :index, locals: { **action_locals, models: result.value }
           end
         end
 
@@ -41,7 +43,7 @@ module I2w
           private
 
           def show_response(result)
-            @model = result.value
+            render :show, locals: { **action_locals, model: result.value }
           end
         end
 
@@ -53,7 +55,7 @@ module I2w
           private
 
           def new_response(result)
-            @input = result.value
+            render :new, locals: { **action_locals, input: result.value }
           end
         end
 
@@ -65,7 +67,7 @@ module I2w
           private
 
           def edit_response(result)
-            @input = result.value
+            render :edit, locals: { **action_locals, **result.value }
           end
         end
 
@@ -85,18 +87,16 @@ module I2w
           end
 
           def create_success(model)
-            @model = model
-            flash[:notice] = "Created #{Human[@model]}"
+            flash[:notice] = "Created #{Human[model]}"
 
             respond_to do |format|
-              format.turbo_stream
-              format.html { redirect_to(respond_to?(:show) ? @model : { action: :index }) }
+              format.turbo_stream { render :create, locals: { **action_locals, model: model } }
+              format.html { redirect_to(respond_to?(:show) ? model : { action: :index }) }
             end
           end
 
           def create_failure(input)
-            @input = input
-            render :new
+            render :new, locals: { **action_locals, input: input }
           end
         end
 
@@ -116,18 +116,16 @@ module I2w
           end
 
           def update_success(model)
-            @model = model
-            flash[:notice] = "Updated #{Human[@model]}"
+            flash[:notice] = "Updated #{Human[model]}"
 
             respond_to do |format|
-              format.turbo_stream
-              format.html { redirect_to (respond_to?(:show) ? @model : { action: :index }) }
+              format.turbo_stream { render :update, locals: { **action_locals, model: model } }
+              format.html { redirect_to(respond_to?(:show) ? model : { action: :index }) }
             end
           end
 
-          def update_failure(input)
-            @input = input
-            render :edit
+          def update_failure(hash)
+            render :edit, locals: { **action_locals, **hash }
           end
         end
 
@@ -147,21 +145,19 @@ module I2w
           end
 
           def destroy_success(model)
-            @model = model
             flash[:notice] = "Destroyed #{Human[model]}"
 
             respond_to do |format|
-              format.turbo_stream
+              format.turbo_stream { render :destroy, locals: { **action_locals, model: model } }
               format.html { redirect_to url_for(action: :index) }
             end
           end
 
           def destroy_failure(failure)
-            @errors = failure.errors
-            flash[:alert] = "Destroy failed: #{Human[@errors]}"
+            flash[:alert] = "Destroy failed: #{Human[failure]}"
 
             respond_to do |format|
-              format.turbo_stream
+              format.turbo_stream { render :destroy_failure, locals: action_locals }
               format.html { redirect_to url_for(action: :index) }
             end
           end

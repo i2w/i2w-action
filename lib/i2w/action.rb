@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'i2w/result'
-require 'i2w/repo/class_accessor'
+require 'i2w/repo/class'
+require_relative 'stream'
 require_relative 'action/version'
 require_relative 'action/actions'
 require_relative 'action/transaction'
@@ -9,8 +10,8 @@ require_relative 'action/transaction'
 module I2w
   # Base class for actions
   class Action
-    extend Repo::ClassAccessor
-    
+    extend Repo::Class
+
     repo_class_accessor :repository, :input, model: -> { module_parent.name.singularize.constantize }
 
     def self.call(...) = new.call(...)

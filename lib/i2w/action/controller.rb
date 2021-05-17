@@ -8,7 +8,7 @@ module I2w
       extend ActiveSupport::Concern
 
       included do
-        extend Repo::ClassAccessor
+        extend Repo::Class
 
         repo_class_accessor :repository, :input, model: -> { controller_path.singularize.classify.constantize }
       end
@@ -42,6 +42,10 @@ module I2w
 
       def action_attributes
         params.require(input_class.model_name.param_key).permit(*input_class.attribute_names)
+      end
+
+      def action_locals
+        {}
       end
     end
   end

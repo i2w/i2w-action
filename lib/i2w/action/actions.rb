@@ -39,6 +39,7 @@ module I2w
       module Edit
         def call(id)
           repo.find(id: id).and_then { |model| input_class.new(model) }
+          end
         end
       end
 
@@ -49,7 +50,7 @@ module I2w
         end
       end
 
-      # Default implementation of the update action
+      # Default implementation of the update action, failure includes the model and input
       module Update
         # include Result::Call
         #
@@ -59,7 +60,7 @@ module I2w
         # end
 
         def call(id, attributes)
-          validate(attributes).and_then { |valid| repo.update id: id, input: valid }
+          result = validate(attributes).and_then { |valid| repo.update id: id, input: valid }
         end
       end
 
@@ -82,7 +83,7 @@ module I2w
           transaction do
             Result[id].and_then { |id| repo.find id: id }
                       .and_then { |model| validate(**model, **patch) }
-                      .and_then { repo.update id: id, input: patch }
+                      .and_then { |valid| repo.update id: id, input: valid }
           end
         end
       end

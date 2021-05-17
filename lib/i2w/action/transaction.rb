@@ -2,7 +2,7 @@ module I2w
   class Action
     # include this to have the #call method wrapped in Action#transaction, also applies to all descendents
     module Transaction
-      include ActiveSupport::Concern
+      extend ActiveSupport::Concern
 
       included do
         prepend Methods
