@@ -38,8 +38,7 @@ module I2w
       # Default implementation of the edit action
       module Edit
         def call(id)
-          repo.find(id: id).and_then { |model| input_class.new(model) }
-          end
+          repo.find(id: id).and_then { |model| input_class.from_model(model) }
         end
       end
 
@@ -52,39 +51,8 @@ module I2w
 
       # Default implementation of the update action, failure includes the model and input
       module Update
-        # include Result::Call
-        #
-        # def call(id, attributes)
-        #   valid = value validate(attributes)
-        #   repo.update id: id, input: valid
-        # end
-
         def call(id, attributes)
-          result = validate(attributes).and_then { |valid| repo.update id: id, input: valid }
-        end
-      end
-
-      # Implementation of patch, which is like update, but has partial input which is patched onto the existing
-      # before validation
-      module Patch
-        # extend ActiveSupport::Concern
-        # 
-        # included do
-        #   include Result::Call
-        #   include Action::Transaction
-        # end
-        #
-        # def call(id, patch)
-        #   model = value repo.find(id)
-        #   value validate(**model, **patch)
-        #   repo.update id: id, input: patch
-        # end
-        def call(id, patch)
-          transaction do
-            Result[id].and_then { |id| repo.find id: id }
-                      .and_then { |model| validate(**model, **patch) }
-                      .and_then { |valid| repo.update id: id, input: valid }
-          end
+          validate(attributes).and_then { |valid| repo.update id: id, input: valid }
         end
       end
 

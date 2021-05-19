@@ -67,7 +67,7 @@ module I2w
           private
 
           def edit_response(result)
-            render :edit, locals: { **action_locals, **result.value }
+            render :edit, locals: { **action_locals, input: result.value.input, model: result.value.model }
           end
         end
 
@@ -124,19 +124,19 @@ module I2w
             end
           end
 
-          def update_failure(hash)
-            render :edit, locals: { **action_locals, **hash }
+          def update_failure(failure)
+            render :edit, locals: { **action_locals, input: failure.input, model: failure.model }
           end
         end
 
         module Destroy
           def destroy
-            destory_response action(:destroy).call(params[:id])
+            destroy_response action(:destroy).call(params[:id])
           end
 
           private
 
-          def destory_response(result)
+          def destroy_response(result)
             if result.success?
               destroy_success(result.value)
             else
@@ -154,10 +154,10 @@ module I2w
           end
 
           def destroy_failure(failure)
-            flash[:alert] = "Destroy failed: #{Human[failure]}"
+            flash[:alert] = "Destroy failed: #{Human[failure.errors]}"
 
             respond_to do |format|
-              format.turbo_stream { render :destroy_failure, locals: action_locals }
+              format.turbo_stream { render :destroy_failure, locals: { **action_locals, model: failure.model } }
               format.html { redirect_to url_for(action: :index) }
             end
           end
