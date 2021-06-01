@@ -1,5 +1,5 @@
 module I2w
-  class Streamable
+  class Streamable < DataObject::Mutable
     module Lookup
       extend self
 
@@ -19,7 +19,10 @@ module I2w
       private
 
       def parse_streamable_args(prefix = nil, model_or_model_class)
-        raise ArgumentError, "(prefix or nil, model or model class), got: (#{prefix}, #{model_or_model_class})" unless model_or_model_class.respond_to?(:model_name)
+        unless model_or_model_class.respond_to?(:model_name)
+          raise ArgumentError,
+                "(prefix or nil, model or model class), got: (#{prefix}, #{model_or_model_class})"
+        end
 
         model = model_or_model_class if model_or_model_class.respond_to?(:to_key)
         model_class = model&.class || model_or_model_class
@@ -31,7 +34,11 @@ module I2w
         namespace = model_class.module_parent
         "#{namespace}::#{prefix&.to_s&.camelize}#{model_class.name.demodulize}Streamable".constantize
       rescue NameError
-        Streamable
+        begin
+          "#{namespace}::ApplicationStreamable".constantize
+        rescue NameError
+          Streamable
+        end
       end
     end
   end

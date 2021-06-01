@@ -1,5 +1,5 @@
 module I2w
-  class Streamable
+  class Streamable < DataObject::Mutable
     module DomId
       extend self
 

@@ -38,7 +38,7 @@ module I2w
       # Default implementation of the edit action
       module Edit
         def call(id)
-          repo.find(id: id).and_then { |model| input_class.from_model(model) }
+          repo.find(id: id).and_then { |model| input_class.with_model(model) }
         end
       end
 
