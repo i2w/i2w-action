@@ -2,14 +2,14 @@ require_relative 'streamable_methods'
 
 module I2w
   class Streamable
-    class Parent < DataObject::Mutable
+    class Parent < DataObject::Immutable
       include StreamableMethods
 
       attr_reader :model_class
 
       def initialize(model_class, **attributes)
-        super(**attributes)
         @model_class = model_class
+        super(**attributes)
       end
 
       def target(prefix = nil) = [*prefix, model_class]
