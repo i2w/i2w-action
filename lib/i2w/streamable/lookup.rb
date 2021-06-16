@@ -9,19 +9,18 @@ module I2w
         prefix, model, model_class = parse_streamable_args(*streamable)
 
         @streamable_classes = Hash.new { |m, args| m[args] = streamable_class(*args) }
-        klass = @streamable_classes[[prefix, model_class]]
+        streamable_class = @streamable_classes[[prefix, model_class]]
 
-        return klass.new(model, **opts) if model
+        return streamable_class::Model.new(model, **opts) if model
 
-        klass::Parent.new(model_class, **opts)
+        streamable_class::Parent.new(model_class, **opts)
       end
 
       private
 
       def parse_streamable_args(prefix = nil, model_or_model_class)
         unless model_or_model_class.respond_to?(:model_name)
-          raise ArgumentError,
-                "(prefix or nil, model or model class), got: (#{prefix}, #{model_or_model_class})"
+          raise ArgumentError, "(prefix or nil, model or model class), got: (#{prefix}, #{model_or_model_class})"
         end
 
         model = model_or_model_class if model_or_model_class.respond_to?(:to_key)

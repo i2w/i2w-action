@@ -12,40 +12,40 @@ module I2w
     end
 
     class MessageStreamable < Streamable
-      class Parent < Streamable::Parent
-        attr_reader :room
-
-        def initialize(model_class, room_id:)
-          @room = Room.from(id: room_id)
-          super(model_class)
-        end
+      parent do
+        attribute :room_id
 
         def stream_from = Room
 
-        def target(prefix = nil) = [*prefix, room, Message]
+        def target(prefix = nil) = [*prefix, Room.from(id: room_id), Message]
       end
 
-      def new_parent
-        Parent.new(model.class, room_id: model.room_id)
+      model do
+        def parent
+          Parent.new(model.class, room_id: model.room_id)
+        end
       end
     end
 
     class EveryMessageStreamable < Streamable
+      parent do
+        # this defines the parent class
+      end
     end
 
     test 'Streamable[...] returns corresponding Streamable class' do
       room = Room.from(name: 'lobby', id: 1)
       msg1 = Message.from(room_id: room.id, message: 'greetings!', id: 1)
 
-      assert_equal Streamable, Streamable[room].class
+      assert_equal Streamable::Model, Streamable[room].class
       assert_equal Streamable::Parent, Streamable[Room].class
 
-      assert_equal MessageStreamable, Streamable[msg1].class
+      assert_equal MessageStreamable::Model, Streamable[msg1].class
       assert_equal MessageStreamable::Parent, Streamable[msg1].parent.class
       assert_equal MessageStreamable::Parent, Streamable[Message, room_id: 1].class
 
-      assert_equal EveryMessageStreamable, Streamable[:every, msg1].class
-      assert_equal Streamable::Parent, Streamable[:every, Message].class
+      assert_equal EveryMessageStreamable::Parent, Streamable[:every, Message].class
+      assert_equal Streamable::Model, Streamable[:every, msg1].class
     end
 
     test 'Streamable target_id and parent_id methods' do
