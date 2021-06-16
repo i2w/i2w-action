@@ -20,7 +20,7 @@ module I2w
         def target(prefix = nil) = [*prefix, Room.from(id: room_id), Message]
       end
 
-      model do
+      child do
         def parent
           Parent.new(model.class, room_id: model.room_id)
         end
@@ -28,24 +28,21 @@ module I2w
     end
 
     class EveryMessageStreamable < Streamable
-      parent do
-        # this defines the parent class
-      end
     end
 
     test 'Streamable[...] returns corresponding Streamable class' do
       room = Room.from(name: 'lobby', id: 1)
       msg1 = Message.from(room_id: room.id, message: 'greetings!', id: 1)
 
-      assert_equal Streamable::Model, Streamable[room].class
+      assert_equal Streamable::Child, Streamable[room].class
       assert_equal Streamable::Parent, Streamable[Room].class
 
-      assert_equal MessageStreamable::Model, Streamable[msg1].class
+      assert_equal MessageStreamable::Child, Streamable[msg1].class
       assert_equal MessageStreamable::Parent, Streamable[msg1].parent.class
       assert_equal MessageStreamable::Parent, Streamable[Message, room_id: 1].class
 
       assert_equal EveryMessageStreamable::Parent, Streamable[:every, Message].class
-      assert_equal Streamable::Model, Streamable[:every, msg1].class
+      assert_equal EveryMessageStreamable::Child, Streamable[:every, msg1].class
     end
 
     test 'Streamable target_id and parent_id methods' do

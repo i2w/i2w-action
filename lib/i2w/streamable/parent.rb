@@ -12,6 +12,8 @@ module I2w
         super(**attributes)
       end
 
+      def stream_from = model_class
+
       def target(prefix = nil) = [*prefix, model_class]
 
       def locals = { model_class: model_class, **attributes }

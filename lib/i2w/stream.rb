@@ -18,14 +18,14 @@ module I2w
 
     def remove(prefix = nil) = broadcast(:remove, :target_id, prefix, content: false)
 
-    def replace(prefix = nil, content: true) = broadcast(:replace, :target_id, prefix, content: content)
+    def replace(prefix = nil, &content) = broadcast(:replace, :target_id, prefix, content: content)
 
-    def append(prefix = nil, content: true)
+    def append(prefix = nil, &content)
       remove(prefix) # TODO: review this once hotwire resolves the double append behaviour
       broadcast(:append, :parent_id, prefix, content: content)
     end
 
-    def prepend(prefix = nil, content: true)
+    def prepend(prefix = nil, &content)
       remove(prefix) # TODO: review this once hotwire resolves the double append behaviour
       broadcast(:prepend, :parent_id, prefix, content: content)
     end
@@ -39,7 +39,8 @@ module I2w
     def broadcast(action, id, prefix = nil, content:)
       stream = streamable.stream
       opts = { action: action, target: streamable.send(id, prefix) }
-      opts[:content] = streamable.content(prefix) if content
+      content = content.call if content.respond_to?(:call)
+      opts[:content] = content || streamable.content(prefix) unless content == false
 
       later? ? broadcast_later(stream, opts) : broadcast_now(stream, opts)
     end

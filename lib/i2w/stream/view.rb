@@ -42,7 +42,7 @@ module I2w
       end
 
       def default_content(prefix)
-        proc { view.render partial: streamable.partial(prefix), locals: streamable.locals }
+        proc { view.render streamable.partial(prefix), streamable.locals }
       end
     end
   end
