@@ -2,9 +2,16 @@ require_relative 'streamable'
 require_relative 'stream/view'
 
 module I2w
+  # provides a set of conventions for streaming models using Hotwire
+  #
+  # define <model>Streamable in your application to override default behaviour
   class Stream
     def self.[](*streamable, later: false, **opts)
       new Streamable.lookup(*streamable, **opts), later: later
+    end
+
+    def self.view(view, *streamable, **opts)
+      View.new(view, Streamable.lookup(*streamable, **opts))
     end
 
     attr_reader :streamable

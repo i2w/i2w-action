@@ -6,6 +6,7 @@ require_relative 'stream'
 require_relative 'action/version'
 require_relative 'action/actions'
 require_relative 'action/transaction'
+require_relative 'action/stream_action'
 
 module I2w
   # Base class for actions
