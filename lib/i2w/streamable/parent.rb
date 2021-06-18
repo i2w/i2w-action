@@ -18,7 +18,7 @@ module I2w
 
       def locals = { model_class: model_class, **attributes }
 
-      def partial(prefix) = "#{model_class.model_name.collection}/#{prefix}"
+      def partial(template) = "#{model_class.model_name.collection}/#{template}"
     end
   end
 end

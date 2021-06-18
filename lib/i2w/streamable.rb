@@ -3,10 +3,13 @@ require 'i2w/data_object'
 require_relative 'streamable/lookup'
 require_relative 'streamable/child'
 require_relative 'streamable/parent'
+require_relative 'streamable/belongs_to'
 
 module I2w
   # Given a model or a model class, a streamable implements the interface used by Stream and Stream::View
   class Streamable
+    extend BelongsTo
+
     class << self
       def lookup(...) = Lookup.call(...)
       alias [] lookup
@@ -23,7 +26,7 @@ module I2w
 
       # we subclass the Model and Parent inner classes each time a new Streamable is inherited
       def inherited(subclass)
-        super(subclass)
+        super
         subclass.const_set(:Child, Class.new(subclass.superclass.const_get(:Child)))
         subclass.const_set(:Parent, Class.new(subclass.superclass.const_get(:Parent)))
       end
