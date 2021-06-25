@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module I2w
-  class Streamable < DataObject::Mutable
+  class Streamable
+    # dom_id for Streamables
     module DomId
       extend self
 

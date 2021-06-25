@@ -6,7 +6,7 @@ module I2w
   #
   # define <model>Streamable in your application to override default behaviour
   class Stream
-    def self.[](*streamable, later: false, **opts)
+    def self.[](*streamable, later: true, **opts)
       new Streamable.lookup(*streamable, **opts), later: later
     end
 
