@@ -14,12 +14,7 @@ module I2w
 
     class << self
       def lookup(...) = Lookup.call(...)
-
       alias [] lookup
-
-      def stream_prefix(prefix) = define_method(:stream_prefix) { prefix }
-
-      def renderer(renderer) = define_method(:renderer) { renderer }
 
       def model(&block) = self::ModelMethods.module_eval(&block)
 
@@ -38,7 +33,7 @@ module I2w
       def setup_specialized_class(subclass, name)
         mod_name = "#{name}Methods"
         subclass.const_set mod_name, Module.new.include(const_get(mod_name)).extend(DataObject::DefineAttributes)
-        subclass.const_set name, Class.new(self).include(subclass.const_get(mod_name))
+        subclass.const_set name, Class.new(subclass).include(subclass.const_get(mod_name))
       end
     end
 
@@ -55,11 +50,11 @@ module I2w
 
     def stream_from = streamed
 
+    def stream = [*stream_prefix, *stream_from]
+
     def target(prefix = nil) = [*prefix, streamed]
 
     def target_id(...) = dom_id(*target(...))
-
-    def stream = [*stream_prefix, *stream_from]
 
     def content(prefix = nil) = renderer.render(formats: [:html], partial: partial(prefix), locals: locals)
 

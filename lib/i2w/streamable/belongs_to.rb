@@ -13,12 +13,10 @@ module I2w
         model_class do
           attribute foreign_key
           define_method(:belongs_to_model) { belongs_to_class.from id: send(foreign_key) }
-          define_method(:stream_from) { [belongs_to_model, model_class] }
           define_method(:target) { |prefix = nil| [*prefix, belongs_to_model, model_class] }
         end
 
         model do
-          define_method(:stream_from) { parent.stream_from }
           define_method(:parent) { Streamable[model_class, foreign_key => model.send(foreign_key)] }
         end
       end
