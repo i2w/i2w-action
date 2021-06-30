@@ -91,7 +91,7 @@ module I2w
 
             respond_to do |format|
               format.turbo_stream { render :create, locals: { **action_locals, model: model } }
-              format.html { redirect_to(respond_to?(:show) ? model : { action: :index }) }
+              format.html { redirect_to url_for(respond_to?(:show) ? { id: model.id } : { action: :index }) }
             end
           end
 
@@ -120,7 +120,7 @@ module I2w
 
             respond_to do |format|
               format.turbo_stream { render :update, locals: { **action_locals, model: model } }
-              format.html { redirect_to(respond_to?(:show) ? model : { action: :index }) }
+              format.html { redirect_to url_for(respond_to?(:show) ? { id: model.id } : { action: :index }) }
             end
           end
 

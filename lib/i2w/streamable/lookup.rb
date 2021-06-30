@@ -1,5 +1,6 @@
 module I2w
   class Streamable
+    # responsible for looking up streamables given objects
     module Lookup
       extend self
 
