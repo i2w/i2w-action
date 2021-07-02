@@ -52,7 +52,7 @@ module I2w
       # Default implementation of the update action, failure includes the model and input
       module Update
         def call(id, attributes)
-          validate(attributes).and_then { |valid| repo.update id: id, input: valid }
+          validate(attributes, id).and_then { |valid| repo.update id: id, input: valid }
         end
       end
 

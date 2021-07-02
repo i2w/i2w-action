@@ -31,9 +31,14 @@ module I2w
     def repo = Repo[repository_class]
 
     # returns Result.success(valid input) or Result.failure(invalid input)
-    def validate(attributes)
+    # if id is given, and the result is a failure, then return Result.failure(invalid input with model)
+    def validate(attributes, id = nil)
       input = input_class.new(attributes)
-      input.valid? ? Result.success(input) : Result.failure(input)
+
+      return Result.success(input) if input.valid?
+      return Result.failure(input) if id.nil?
+
+      repo.find(id: id).and_then { Result.failure Input::WithModel.new(input, _1) }
     end
 
     # yield in a repo_class transaction, and automatically rollback if the result is a failure
