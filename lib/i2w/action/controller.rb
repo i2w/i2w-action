@@ -45,7 +45,7 @@ module I2w
       end
 
       def action_locals
-        {}
+        { model_class: model_class }
       end
     end
   end
