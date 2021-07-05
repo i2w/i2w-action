@@ -11,13 +11,13 @@ module I2w
         end
 
         module ClassMethods
-          def crud_actions(model_class = nil, repository_class: nil, input_class: nil, only: [], except: [])
+          def crud_actions(model_class = nil, repository_class: nil, input_class: nil, only: nil, except: nil)
             self.repository_class = repository_class unless repository_class.nil?
             self.model_class = model_class unless model_class.nil?
             self.input_class = input_class unless input_class.nil?
 
-            actions = %i[index show new edit create update destroy] - except
-            actions = only - actions if only.any?
+            actions = %i[index show new edit create update destroy] - [*except]
+            actions = [*only] - actions if only&.any?
 
             actions.each { |action| include const_get(action.to_s.classify) }
           end
