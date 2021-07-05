@@ -7,9 +7,11 @@ module I2w
       def call(*streamable, **opts)
         return streamable[0] if streamable.length == 1 && streamable.is_a?(Streamable)
 
+        namespace = streamable.shift if streamable[0].is_a?(Module) && !streamable[0].is_a?(Class)
+        
         prefix, model, model_class = parse_streamable_args(*streamable)
 
-        @streamable_classes = Hash.new { |m, args| m[args] = streamable_class(*args) }
+        @streamable_classes = Hash.new { |m, args| m[args] = streamable_class(*args, namespace: namespace) }
         streamable_class = @streamable_classes[[prefix, model_class]]
 
         return streamable_class::Model.new(model, **opts) if model
@@ -30,15 +32,23 @@ module I2w
         [prefix, model, model_class]
       end
 
-      def streamable_class(prefix, model_class)
-        namespace = model_class.module_parent
+      def streamable_class(prefix, model_class, namespace: nil)
+        klass = streamable_class_in_namespace(prefix, model_class, namespace) if namespace
+        klass ||= streamable_class_in_namespace(prefix, model_class, model_class.module_parent)
+
+        klass || Streamable
+      end
+
+      def streamable_class_in_namespace(prefix, model_class, namespace)
         "#{namespace}::#{prefix&.to_s&.camelize}#{model_class.name.demodulize}Streamable".constantize
       rescue NameError
-        begin
-          "#{namespace}::ApplicationStreamable".constantize
-        rescue NameError
-          Streamable
-        end
+        application_streamable_in_namespace(namespace)
+      end
+
+      def application_streamable_in_namespace(namespace)
+        "#{namespace}::ApplicationStreamable".constantize
+      rescue NameError
+        nil
       end
     end
   end

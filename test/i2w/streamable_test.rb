@@ -28,6 +28,11 @@ module I2w
     class EveryMessageStreamable < Streamable
     end
 
+    module Namespace
+      class MessageStreamable < StreamableTest::MessageStreamable
+      end
+    end
+
     test 'Streamable[...] returns corresponding Streamable class' do
       room = Room.from(name: 'lobby', id: 1)
       msg1 = Message.from(room_id: room.id, message: 'greetings!', id: 1)
@@ -39,8 +44,17 @@ module I2w
       assert_equal MessageStreamable::ModelClass, Streamable[msg1].parent.class
       assert_equal MessageStreamable::ModelClass, Streamable[Message, room_id: 1].class
 
-      assert_equal I2w::StreamableTest::EveryMessageStreamable::ModelClass, Streamable[:every, Message].class
-      assert_equal I2w::StreamableTest::EveryMessageStreamable::Model, Streamable[:every, msg1].class
+      assert_equal EveryMessageStreamable::ModelClass, Streamable[:every, Message].class
+      assert_equal EveryMessageStreamable::Model, Streamable[:every, msg1].class
+    end
+
+    test 'Streamable[namespace, ...] returns namespaced Streamable class if available' do
+      room = Room.from(name: 'lobby', id: 1)
+      msg1 = Message.from(room_id: room.id, message: 'greetings!', id: 1)
+
+      assert_equal Namespace::MessageStreamable::Model, Streamable[Namespace, msg1].class
+      assert_equal Namespace::MessageStreamable::ModelClass, Streamable[Namespace, Message, room_id: 1].class
+      assert_equal EveryMessageStreamable::Model, Streamable[Namespace, :every, msg1].class
     end
 
     test 'Streamable target_id and parent_id methods' do
