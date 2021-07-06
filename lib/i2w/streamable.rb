@@ -37,9 +37,10 @@ module I2w
       end
     end
 
-    attr_reader :streamed
+    attr_reader :streamed, :namespace
 
-    def initialize(streamed, **attributes)
+    def initialize(streamed, namespace: nil, **attributes)
+      @namespace = namespace
       @streamed = streamed
       super(**attributes)
     end
@@ -59,6 +60,10 @@ module I2w
     def content(prefix = nil) = renderer.render(formats: [:html], partial: partial(prefix), locals: locals)
 
     def dom_id(...) = DomId.call(...)
+
+    def streamable(...)
+      Streamable.lookup(*namespace, ...)
+    end
 
     # included into the specialized Model Streamable
     module ModelClassMethods
@@ -89,7 +94,7 @@ module I2w
 
       def partial(prefix = nil) = [model_name.collection, [*prefix, model_name.element].join('_')].join('/')
 
-      def parent = Streamable[model_class]
+      def parent = streamable(model_class)
     end
 
     class Model < Streamable

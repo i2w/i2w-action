@@ -7,6 +7,8 @@ module I2w
       def belongs_to(belongs_to_class, foreign_key: nil)
         foreign_key ||= "#{belongs_to_class.model_name.param_key}_id".to_sym
 
+        define_method(:belongs_to_class) { belongs_to_class }
+
         model_class do
           attribute foreign_key
           define_method(:belongs_to_model) { belongs_to_class.from id: send(foreign_key) }
@@ -14,7 +16,8 @@ module I2w
         end
 
         model do
-          define_method(:parent) { Streamable[model_class, foreign_key => model.send(foreign_key)] }
+          define_method(:belongs_to_model) { belongs_to_class.from id: model.send(foreign_key) }
+          define_method(:parent) { streamable(model_class, foreign_key => belongs_to_model.id) }
         end
       end
     end

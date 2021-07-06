@@ -21,7 +21,7 @@ module I2w
       end
 
       model do
-        def parent = Streamable[model_class, room_id: model.room_id]
+        def parent = streamable(model_class, room_id: model.room_id)
       end
     end
 
@@ -54,6 +54,7 @@ module I2w
 
       assert_equal Namespace::MessageStreamable::Model, Streamable[Namespace, msg1].class
       assert_equal Namespace::MessageStreamable::ModelClass, Streamable[Namespace, Message, room_id: 1].class
+      assert_equal Namespace::MessageStreamable::ModelClass, Streamable[Namespace, msg1].parent.class
       assert_equal EveryMessageStreamable::Model, Streamable[Namespace, :every, msg1].class
     end
 

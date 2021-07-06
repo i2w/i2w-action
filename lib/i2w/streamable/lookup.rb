@@ -14,9 +14,9 @@ module I2w
         @streamable_classes = Hash.new { |m, args| m[args] = streamable_class(*args, namespace: namespace) }
         streamable_class = @streamable_classes[[prefix, model_class]]
 
-        return streamable_class::Model.new(model, **opts) if model
+        return streamable_class::Model.new(model, namespace: namespace, **opts) if model
 
-        streamable_class::ModelClass.new(model_class, **opts)
+        streamable_class::ModelClass.new(model_class, namespace: namespace, **opts)
       end
 
       private
