@@ -4,15 +4,13 @@ module I2w
     module Lookup
       extend self
 
-      def call(*streamable, **opts)
+      def call(*streamable, namespace: nil, **opts)
         return streamable[0] if streamable.length == 1 && streamable.is_a?(Streamable)
 
-        namespace = streamable.shift if streamable[0].is_a?(Module) && !streamable[0].is_a?(Class)
-        
         prefix, model, model_class = parse_streamable_args(*streamable)
 
-        @streamable_classes = Hash.new { |m, args| m[args] = streamable_class(*args, namespace: namespace) }
-        streamable_class = @streamable_classes[[prefix, model_class]]
+        @streamable_classes = Hash.new { |m, args| m[args] = streamable_class(*args) }
+        streamable_class = @streamable_classes[[prefix, model_class, namespace]]
 
         return streamable_class::Model.new(model, namespace: namespace, **opts) if model
 
@@ -32,7 +30,7 @@ module I2w
         [prefix, model, model_class]
       end
 
-      def streamable_class(prefix, model_class, namespace: nil)
+      def streamable_class(prefix, model_class, namespace)
         klass = streamable_class_in_namespace(prefix, model_class, namespace) if namespace
         klass ||= streamable_class_in_namespace(prefix, model_class, model_class.module_parent)
 

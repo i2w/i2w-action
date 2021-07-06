@@ -52,10 +52,10 @@ module I2w
       room = Room.from(name: 'lobby', id: 1)
       msg1 = Message.from(room_id: room.id, message: 'greetings!', id: 1)
 
-      assert_equal Namespace::MessageStreamable::Model, Streamable[Namespace, msg1].class
-      assert_equal Namespace::MessageStreamable::ModelClass, Streamable[Namespace, Message, room_id: 1].class
-      assert_equal Namespace::MessageStreamable::ModelClass, Streamable[Namespace, msg1].parent.class
-      assert_equal EveryMessageStreamable::Model, Streamable[Namespace, :every, msg1].class
+      assert_equal Namespace::MessageStreamable::Model, Streamable[msg1, namespace: Namespace].class
+      assert_equal Namespace::MessageStreamable::ModelClass, Streamable[Message, room_id: 1, namespace: Namespace].class
+      assert_equal Namespace::MessageStreamable::ModelClass, Streamable[msg1, namespace: Namespace].parent.class
+      assert_equal EveryMessageStreamable::Model, Streamable[:every, msg1, namespace: Namespace].class
     end
 
     test 'Streamable target_id and parent_id methods' do
