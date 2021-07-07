@@ -13,9 +13,22 @@ module I2w
   class Action
     extend Repo::Class
 
-    repo_class_accessor :repository, :input, model: -> { module_parent.name.singularize.constantize }
+    repo_class_accessor :repository, :input, model: -> { lookup_namespaced_class(module_parent.name.singularize) }
 
-    def self.call(...) = new.call(...)
+    class << self
+      def call(...) = new.call(...)
+
+      def lookup_namespaced_class(name)
+        parts = name.split('::')
+        candidates = parts.length.times.map { "#{parts[_1..].join('::')}" }
+        candidates.each do |candidate|
+          return candidate.constantize
+        rescue NameError
+          nil
+        end
+        raise NameError, "couldn't find class, searched: #{candidates.join(', ')}"
+      end
+    end
 
     def initialize(repository_class: self.class.repository_class, input_class: self.class.input_class)
       @repository_class = repository_class
