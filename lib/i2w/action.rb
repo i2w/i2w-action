@@ -28,7 +28,7 @@ module I2w
 
     # returns a proxy for repository methods, which wraps calls in repo_result,
     # which turns models into success monads, and handles a variety of active record errors as failure monads
-    def repo = Repo[repository_class]
+    def repo(klass = repository_class) = Repo.result_proxy(klass)
 
     # returns Result.success(valid input) or Result.failure(invalid input)
     # if id is given, and the result is a failure, then return Result.failure(invalid input with model)

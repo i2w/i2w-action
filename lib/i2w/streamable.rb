@@ -61,9 +61,7 @@ module I2w
 
     def dom_id(...) = DomId.call(...)
 
-    def streamable(*args, **opts)
-      Streamable.lookup(*args, namespace: namespace, **opts)
-    end
+    def streamable(*args, **opts) = Streamable.lookup(*args, namespace: namespace, **opts)
 
     # included into the specialized Model Streamable
     module ModelClassMethods
