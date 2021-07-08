@@ -40,7 +40,7 @@ module I2w
         ["#{controller_name}/#{action_name}_action", "#{action_name}_action"]
       end
 
-      def action_attributes
+      def action_attributes(input_class = self.input_class)
         params.require(input_class.model_name.param_key).permit(*input_class.attribute_names)
       end
 

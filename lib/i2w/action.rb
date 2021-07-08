@@ -13,12 +13,12 @@ module I2w
   class Action
     extend Repo::Class
 
-    repo_class_accessor :repository, :input, model: -> { lookup_namespaced_class(module_parent.name.singularize) }
+    repo_class_accessor :repository, :input, model: -> { possibly_namespaced_class(module_parent.name.singularize) }
 
     class << self
       def call(...) = new.call(...)
 
-      def lookup_namespaced_class(name)
+      def possibly_namespaced_class(name)
         parts = name.split('::')
         candidates = parts.length.times.map { "#{parts[_1..].join('::')}" }
         candidates.each do |candidate|
@@ -43,10 +43,11 @@ module I2w
     # which turns models into success monads, and handles a variety of active record errors as failure monads
     def repo(klass = repository_class) = Repo.result_proxy(klass)
 
+    # pass attributes, or an input object
     # returns Result.success(valid input) or Result.failure(invalid input)
     # if id is given, and the result is a failure, then return Result.failure(invalid input with model)
-    def validate(attributes, id = nil)
-      input = input_class.new(attributes)
+    def validate(input, id = nil)
+      input = input_class.new(input) unless input.respond_to?(:valid?)
 
       return Result.success(input) if input.valid?
       return Result.failure(input) if id.nil?
