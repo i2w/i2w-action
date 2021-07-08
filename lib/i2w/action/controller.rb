@@ -42,6 +42,8 @@ module I2w
 
       def action_attributes(input_class = self.input_class)
         params.require(input_class.model_name.param_key).permit(*input_class.attribute_names)
+      rescue ActionController::ParameterMissing
+        {}
       end
 
       def action_locals
