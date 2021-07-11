@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/i2w/i2w-data_object.git
-  revision: 98a0bfa5a87e2a7ba59a97c602a029efbf40df01
+  revision: 1ad5c149bc41ce892bbf24580bad89b6585fbdf5
   branch: main
   specs:
     i2w-data_object (0.1.0)
 
 GIT
   remote: https://github.com/i2w/i2w-human.git
-  revision: bf21ce2a940f28c1701d2b212f5a14e5247b3e5a
+  revision: 7b33aeda6ce70ae88dd6e11cbe2d2154a9170f44
   branch: main
   specs:
     i2w-human (0.1.0)
@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: 1ba0cf1986f1db20b65a4daf64f62b0e2d637595
+  revision: 0d9f9f84c313909402e3a48dc7b9e51b15d886a3
   branch: main
   specs:
     i2w-result (0.1.0)
@@ -148,7 +148,7 @@ GEM
       method_source
       rake (>= 0.13)
       thor (~> 1.0)
-    rake (13.0.3)
+    rake (13.0.6)
     ruby_jard (0.3.1)
       byebug (>= 9.1, < 12.0)
       pry (~> 0.13.0)
@@ -181,4 +181,4 @@ DEPENDENCIES
   ruby_jard
 
 BUNDLED WITH
-   2.2.3
+   2.2.15
