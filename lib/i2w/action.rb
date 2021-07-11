@@ -26,8 +26,7 @@ module I2w
         rescue NameError
           nil
         end
-        Repo::MissingClass.new message: "couldn't find class, searched: #{candidates.join(', ')}",
-                               name: name, type: :model
+        Repo::MissingClass.new message: "Searched: #{candidates.join(', ')}", name: name, type: :model
       end
     end
 
