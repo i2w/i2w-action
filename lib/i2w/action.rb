@@ -20,13 +20,14 @@ module I2w
 
       def possibly_namespaced_class(name)
         parts = name.split('::')
-        candidates = parts.length.times.map { "#{parts[_1..].join('::')}" }
+        candidates = parts.length.times.map { parts[_1..].join('::').to_s }
         candidates.each do |candidate|
           return candidate.constantize
         rescue NameError
           nil
         end
-        raise NameError, "couldn't find class, searched: #{candidates.join(', ')}"
+        Repo::MissingClass.new message: "couldn't find class, searched: #{candidates.join(', ')}",
+                               name: name, type: :model
       end
     end
 
