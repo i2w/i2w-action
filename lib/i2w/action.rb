@@ -4,6 +4,7 @@ require 'i2w/result'
 require 'i2w/repo/class'
 require_relative 'stream'
 require_relative 'action/version'
+require_relative 'action/possibly_namespaced_repo_class_ref'
 require_relative 'action/actions'
 require_relative 'action/transaction'
 require_relative 'action/stream_action'
@@ -13,21 +14,12 @@ module I2w
   class Action
     extend Repo::Class
 
-    repo_class_accessor :repository, :input, model: -> { possibly_namespaced_class(module_parent.name.singularize) }
+    repo_class_accessor :repository, :input
 
     class << self
       def call(...) = new.call(...)
 
-      def possibly_namespaced_class(name)
-        parts = name.split('::')
-        candidates = parts.length.times.map { parts[_1..].join('::').to_s }
-        candidates.each do |candidate|
-          return candidate.constantize
-        rescue NameError
-          nil
-        end
-        Repo::MissingClass.new message: "Searched: #{candidates.join(', ')}", name: name, type: :model
-      end
+      def repo_class_ref(type) = PossiblyNamespacedRepoClassRef.new(repo_class_base_name, type)
     end
 
     def initialize(repository_class: self.class.repository_class, input_class: self.class.input_class)
