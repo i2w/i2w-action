@@ -10,7 +10,9 @@ module I2w
       included do
         extend Repo::Class
 
-        repo_class_accessor :repository, :input, model: -> { controller_path.singularize.classify.constantize }
+        repo_base controller_path.singularize.classify
+
+        repo_class_accessor :repository, :input, :model
       end
 
       private
