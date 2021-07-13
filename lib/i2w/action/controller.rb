@@ -4,6 +4,7 @@ require_relative 'controller/crud_actions'
 
 module I2w
   class Action
+    # mixin for ActionController::Base
     module Controller
       extend ActiveSupport::Concern
 
@@ -11,6 +12,8 @@ module I2w
         extend Repo::Class
 
         def self.repo_class_base_name = controller_path.singularize.classify
+
+        def self.repo_class_ref(type) = PossiblyNamespacedRepoClassRef.new(repo_class_base_name, type)
 
         repo_class_accessor :repository, :input, :model
       end
