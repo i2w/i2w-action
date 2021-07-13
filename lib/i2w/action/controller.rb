@@ -10,7 +10,7 @@ module I2w
       included do
         extend Repo::Class
 
-        repo_base { controller_path.singularize.classify }
+        def self.repo_class_base_name = controller_path.singularize.classify
 
         repo_class_accessor :repository, :input, :model
       end
