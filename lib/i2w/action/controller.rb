@@ -10,7 +10,7 @@ module I2w
 
       included do
         extend Repo::Class
-        
+
         class << self
           extend Memoize
 
@@ -18,10 +18,8 @@ module I2w
 
           def repo_class_ref(type) = PossiblyNamespacedRepoClassRef.new(repo_class_base_name, type)
 
-          def action_class_name(action_name) = "#{name.sub(/Controller\z/, '')}::#{action_name.to_s.classify}Action"
-
           memoize def action_class(action_name)
-            PossiblyNamespacedRepoClassRef.new(action_class_name(action_name), :action).lookup
+            PossiblyNamespacedRepoClassRef.new(repo_class_base_name.pluralize, :"#{action_name}_action").lookup
           end
         end
 

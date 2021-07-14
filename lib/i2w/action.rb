@@ -18,9 +18,11 @@ module I2w
 
     class << self
       def call(...) = new.call(...)
-      
+
       private
-      
+
+      def repo_class_base_name = module_parent.name.singularize
+
       def repo_class_ref(type) = PossiblyNamespacedRepoClassRef.new(repo_class_base_name, type)
     end
 
