@@ -12,7 +12,6 @@ module I2w
       included do
         extend Repo::Base.extension :controller,
                                     accessors: %i[repository input model action],
-                                    search_namespaces: true,
                                     to_base: proc { _1.sub(/Controller\z/, '').singularize },
                                     from_base: proc { raise "Can't lookup :controller from #{_1}" }
       end

@@ -13,7 +13,6 @@ module I2w
   class Action
     extend Repo::Base.extension :action,
                                 accessors: %i[repository input],
-                                search_namespaces: true,
                                 to_base: proc { _1.deconstantize.singularize },
                                 from_base: proc { "#{_1.pluralize}::#{_2.to_s.camelize}Action" }
 
