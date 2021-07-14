@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'i2w/repo/base'
 require_relative 'controller/crud_actions'
 
 module I2w
@@ -9,25 +10,11 @@ module I2w
       extend ActiveSupport::Concern
 
       included do
-        extend Repo::Class
-
-        class << self
-          extend Memoize
-
-          def repo_class_base_name = controller_path.singularize.classify
-
-          def repo_class_ref(type) = PossiblyNamespacedRepoClassRef.new(repo_class_base_name, type)
-
-          def action_class_name(action_name)
-            "#{repo_class_base_name.pluralize}::#{action_name.to_s.camelize}Action"
-          end
-
-          memoize def action_class(action_name)
-            PossiblyNamespacedRepoClassRef.new(action_class_name(action_name), nil).lookup
-          end
-        end
-
-        repo_class_accessor :repository, :input, :model
+        extend Repo::Base.extension :controller,
+                                    accessors: %i[repository input model action],
+                                    search_namespaces: true,
+                                    to_base: proc { _1.sub(/Controller\z/, '').singularize },
+                                    from_base: proc { raise "Can't lookup :controller from #{_1}" }
       end
 
       private

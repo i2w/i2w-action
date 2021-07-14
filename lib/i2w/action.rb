@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'i2w/result'
-require 'i2w/repo/class'
+require 'i2w/repo/base'
 require_relative 'stream'
 require_relative 'action/version'
-require_relative 'action/possibly_namespaced_repo_class_ref'
 require_relative 'action/actions'
 require_relative 'action/transaction'
 require_relative 'action/stream_action'
@@ -12,18 +11,14 @@ require_relative 'action/stream_action'
 module I2w
   # Base class for actions
   class Action
-    extend Repo::Class
-
-    repo_class_accessor :repository, :input
+    extend Repo::Base.extension :action,
+                                accessors: %i[repository input],
+                                search_namespaces: true,
+                                to_base: proc { _1.deconstantize.singularize },
+                                from_base: proc { "#{_1.pluralize}::#{_2.to_s.camelize}Action" }
 
     class << self
       def call(...) = new.call(...)
-
-      private
-
-      def repo_class_base_name = module_parent.name.singularize
-
-      def repo_class_ref(type) = PossiblyNamespacedRepoClassRef.new(repo_class_base_name, type)
     end
 
     def initialize(repository_class: self.class.repository_class, input_class: self.class.input_class)
