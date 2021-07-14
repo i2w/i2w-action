@@ -12,6 +12,7 @@ module I2w
         rescue NameError
           nil
         end
+        nil
       end
     end
   end
