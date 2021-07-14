@@ -12,9 +12,10 @@ module I2w
 
         module ClassMethods
           def crud_actions(model_class = nil, repository_class: nil, input_class: nil, only: nil, except: nil)
-            self.repository_class = repository_class unless repository_class.nil?
+            self.repo_base(model_class) unless model_class.nil?
             self.model_class = model_class unless model_class.nil?
             self.input_class = input_class unless input_class.nil?
+            self.repository_class = repository_class unless repository_class.nil?
 
             actions = %i[index show new edit create update destroy] - [*except]
             actions = [*only] - actions if only&.any?
