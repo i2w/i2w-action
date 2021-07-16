@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'i2w/result'
-require 'i2w/repo/base'
+require 'i2w/repo'
 require_relative 'stream'
+require_relative 'action/controller'
 require_relative 'action/version'
 require_relative 'action/actions'
 require_relative 'action/transaction'
@@ -11,10 +12,25 @@ require_relative 'action/stream_action'
 module I2w
   # Base class for actions
   class Action
-    extend Repo::Base.extension :action,
-                                accessors: %i[repository input],
-                                to_base: proc { _1.deconstantize.singularize },
-                                from_base: proc { "#{_1.pluralize}::#{_2.to_s.camelize}Action" }
+    Repo.register_class self, :action, accessors: %i[repository input] do
+      def group_name = name.deconstantize.singularize
+
+      def from_group_name(group_name, action_name)
+        action_class_candidates(group_name, action_name).each do |class_name|
+          return class_name.constantize
+        rescue NameError
+          nil
+        end
+        raise NameError, "can't find action, searched: #{action_class_candidates(group_name, action_name).join(', ')}"
+      end
+
+      private
+
+      def action_class_candidates(group_name, action_name)
+        parts = group_name.pluralize.split('::')
+        parts.length.times.map { [*parts[0..-_1], "#{action_name.to_s.camelize}Action"].join('::') }
+      end
+    end
 
     class << self
       def call(...) = new.call(...)

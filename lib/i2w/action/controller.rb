@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'i2w/repo/base'
 require_relative 'controller/crud_actions'
 
 module I2w
@@ -10,19 +9,29 @@ module I2w
       extend ActiveSupport::Concern
 
       included do
-        extend Repo::Base.extension :controller,
-                                    accessors: %i[repository input model action],
-                                    to_base: proc { _1.sub(/Controller\z/, '').singularize },
-                                    from_base: proc { raise "Can't lookup :controller from #{_1}" }
-      end
+        Repo.register_class self, accessors: %i[repository input model action] do
+          def group_name = name.sub(/Controller\z/, '').singularize
 
-      private
+          def group_lookup(type, *args)
+            group_name_candidates.each do |group_name|
+              result = Repo.lookup(group_name, type, *args)
+              return result if result.is_a?(Class)
+            end
+            raise NameError, "Couldn't find #{[type, *args].join(', ')} searched: #{group_name_candidates.join(', ')}"
+          end
+
+          private
+
+          def group_name_candidates
+            parts = group_name.split('::')
+            parts.length.times.map { parts[_1..].join('::') }
+          end
+        end
+      end
 
       delegate :repository_class, :input_class, :model_class, :action_class, to: 'self.class', private: true
 
-      def action(action_name = self.action_name)
-        action_class(action_name).new(**action_dependencies)
-      end
+      def action(action_name = self.action_name) = action_class(action_name).new(**action_dependencies)
 
       def action_dependencies
         { repository_class: repository_class, input_class: input_class }
@@ -34,9 +43,7 @@ module I2w
         {}
       end
 
-      def action_locals
-        { model_class: model_class }
-      end
+      def action_locals = { model_class: model_class }
     end
   end
 end
