@@ -24,11 +24,17 @@ module I2w
         raise NameError, "can't find action, searched: #{action_class_candidates(group_name, action_name).join(', ')}"
       end
 
+      # TODO: golly this is a bit complicated - use the tests to make it simpler!
       def action_class_candidates(group_name, action_name)
         action = "#{action_name.to_s.camelize}Action"
         *parts, last = group_name.pluralize.split('::')
-        candidates = parts.length.downto(0).map { [*parts.first(_1), last, action] } << [last, action] << [action]
-        candidates.uniq.map { _1.join('::') }
+        candidates = parts.length.downto(0).map { [*parts.first(_1), last, action] }
+        candidates.concat parts.length.downto(1).map { [*parts.first(_1), action] }
+        candidates << [last, action] << [action]
+
+        result = []
+        [*parts, last, action].each { |x| candidates.each { result << _1 if _1[0] == x } }
+        result.uniq.map { _1.join('::') }
       end
     end
 
