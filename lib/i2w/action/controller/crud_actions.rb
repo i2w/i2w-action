@@ -17,7 +17,7 @@ module I2w
             self.repository_class = repository_class unless repository_class.nil?
 
             actions = %i[index show new edit create update destroy] - [*except]
-            actions = [*only] - actions if only&.any?
+            actions = [*only] & actions if only&.any?
 
             actions.each { |action| include const_get(action.to_s.classify) }
           end
