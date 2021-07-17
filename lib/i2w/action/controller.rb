@@ -12,7 +12,7 @@ module I2w
         Repo.register_class self, accessors: %i[repository input model action] do
           def group_name = name.sub(/Controller\z/, '').singularize
 
-          def group_lookup(type, *args)
+          def group_lookup(group_name, type, *args)
             group_name_candidates(group_name).each do |group_name|
               result = Repo.lookup(group_name, type, *args)
               return result if result.is_a?(Class)
