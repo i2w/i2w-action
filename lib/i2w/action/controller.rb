@@ -17,7 +17,8 @@ module I2w
               result = Repo.lookup(group_name, type, *args)
               return result if result.is_a?(Class)
             end
-            raise NameError, "Couldn't find #{[type, *args].join(', ')} searched: #{group_name_candidates(group_name).join(', ')}"
+            raise NameError, "Couldn't find #{[type, *args].join(', ')} " \
+                             "searched: #{group_name_candidates(group_name).join(', ')}"
           end
 
           def group_name_candidates(group_name)

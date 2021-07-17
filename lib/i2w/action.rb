@@ -25,8 +25,10 @@ module I2w
       end
 
       def action_class_candidates(group_name, action_name)
-        parts = group_name.pluralize.split('::')
-        parts.length.downto(0).map { [*parts.first(_1), "#{action_name.to_s.camelize}Action"].join('::') }
+        action = "#{action_name.to_s.camelize}Action"
+        *parts, last = group_name.pluralize.split('::')
+        candidates = parts.length.downto(0).map { [*parts.first(_1), last, action] } << [last, action] << [action]
+        candidates.uniq.map { _1.join('::') }
       end
     end
 
