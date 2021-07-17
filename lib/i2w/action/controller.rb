@@ -13,16 +13,14 @@ module I2w
           def group_name = name.sub(/Controller\z/, '').singularize
 
           def group_lookup(type, *args)
-            group_name_candidates.each do |group_name|
+            group_name_candidates(group_name).each do |group_name|
               result = Repo.lookup(group_name, type, *args)
               return result if result.is_a?(Class)
             end
-            raise NameError, "Couldn't find #{[type, *args].join(', ')} searched: #{group_name_candidates.join(', ')}"
+            raise NameError, "Couldn't find #{[type, *args].join(', ')} searched: #{group_name_candidates(group_name).join(', ')}"
           end
 
-          private
-
-          def group_name_candidates
+          def group_name_candidates(group_name)
             parts = group_name.split('::')
             parts.length.times.map { parts[_1..].join('::') }
           end

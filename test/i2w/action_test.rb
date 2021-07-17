@@ -1,7 +1,7 @@
-require "test_helper"
+require 'test_helper'
 
 class I2w::ActionTest < ActiveSupport::TestCase
-  test "it has a version number" do
-    assert I2w::Action::VERSION
+  test 'action_class_candidates' do
+    assert_equal ['Cars::NewAction', 'NewAction'], I2w::Action.action_class_candidates('Car', :new)
   end
 end
