@@ -11,20 +11,6 @@ module I2w
       included do
         Repo.register_class self, accessors: %i[repository input model action] do
           def group_name = name.sub(/Controller\z/, '').singularize
-
-          def group_lookup(group_name, type, *args)
-            group_name_candidates(group_name).each do |group_name|
-              result = Repo.lookup(group_name, type, *args)
-              return result if result.is_a?(Class)
-            end
-            raise NameError, "Couldn't find #{[type, *args].join(', ')} " \
-                             "searched: #{group_name_candidates(group_name).join(', ')}"
-          end
-
-          def group_name_candidates(group_name)
-            parts = group_name.split('::')
-            parts.length.times.map { parts[_1..].join('::') }
-          end
         end
       end
 
