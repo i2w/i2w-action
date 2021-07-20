@@ -44,7 +44,7 @@ module I2w
       input = input_class.new(input) unless input.respond_to?(:valid?)
 
       return Result.success(input) if input.valid?
-      return Result.failure(input) if id.nil?
+      return Result.failure(input) if id_or_model.nil?
 
       model = id_or_model.is_a?(Model) ? success(id_or_model) : repo.find(id: id)
       Result.failure Input::WithModel.new(input, model)
