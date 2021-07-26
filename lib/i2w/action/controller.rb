@@ -16,19 +16,25 @@ module I2w
 
       delegate :repository_class, :input_class, :model_class, :action_class, to: 'self.class', private: true
 
-      def action(action_name = self.action_name) = action_class(action_name).new(**action_dependencies)
+      private
 
-      def action_dependencies
+      def action(action_name = self.action_name) = action_class(action_name).new(**dependencies)
+
+      def dependencies
         { repository_class: repository_class, input_class: input_class }
       end
 
-      def action_attributes(input_class = self.input_class)
+      def attributes(input_class = self.input_class)
         params.require(input_class.model_name.param_key).permit(*input_class.attribute_names)
       rescue ActionController::ParameterMissing
         {}
       end
 
-      def action_locals = { model_class: model_class }
+      def locals = { model_class: model_class }
+
+      def redirect_to_model_or_index(model)
+        redirect_to url_for(respond_to?(:show) ? { id: model.id } : { action: :index })
+      end
     end
   end
 end

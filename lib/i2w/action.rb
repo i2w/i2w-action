@@ -29,6 +29,8 @@ module I2w
       @input_class = input_class
     end
 
+    delegate :success, :failure, :match, :hash_result, to: Result
+
     private
 
     attr_reader :repository_class, :input_class
@@ -39,15 +41,9 @@ module I2w
 
     # pass attributes, or an input object
     # returns Result.success(valid input) or Result.failure(invalid input)
-    # if id or model is given, and the result is a failure, then return Result.failure(invalid input with model)
-    def validate(input, id_or_model = nil)
+    def validate(input)
       input = input_class.new(input) unless input.respond_to?(:valid?)
-
-      return Result.success(input) if input.valid?
-      return Result.failure(input) if id_or_model.nil?
-
-      model_result = id_or_model.is_a?(Model) ? success(id_or_model) : repo.find(id: id_or_model)
-      Result.failure Input::WithModel.new(input, model_result.value)
+      input.valid? ? success(input) : failure(input)
     end
 
     # yield in a repo_class transaction, and automatically rollback if the result is a failure

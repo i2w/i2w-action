@@ -17,147 +17,115 @@ module I2w
             self.repository_class = repository_class unless repository_class.nil?
 
             actions = %i[index show new edit create update destroy] - [*except]
-            actions = [*only] & actions if only&.any?
+            actions = [*only] & actions if [*only].any?
 
             actions.each { |action| include const_get(action.to_s.classify) }
           end
         end
 
         module Index
-          def index
-            index_response action(:index).call
-          end
+          def index = index_response(action(:index).call)
 
           private
 
-          def index_response(result)
-            render :index, locals: { **action_locals, models: result.value }
-          end
+          def index_response(result) = render('index', locals: { **locals, **result })
         end
 
         module Show
-          def show
-            show_response action(:show).call(params[:id])
-          end
+          def show = show_response(action(:show).call params[:id])
 
           private
 
-          def show_response(result)
-            render :show, locals: { **action_locals, model: result.value }
-          end
+          def show_response(result) = render('show', locals: { **locals, **result })
         end
 
         module New
-          def new
-            new_response action(:new).call
-          end
+          def new = new_response(action(:new).call)
 
           private
 
-          def new_response(result)
-            render :new, locals: { **action_locals, input: result.value }
-          end
+          def new_response(result) = render('new', locals: { **locals, **result })
         end
 
         module Edit
-          def edit
-            edit_response action(:edit).call(params[:id])
-          end
+          def edit = edit_response(action(:edit).call params[:id])
 
           private
 
-          def edit_response(result)
-            render :edit, locals: { **action_locals, input: result.value.input, model: result.value.model }
-          end
+          def edit_response(result) = render('edit', locals: { **locals, **result })
         end
 
         module Create
-          def create
-            create_response action(:create).call(action_attributes)
-          end
+          def create = create_response(action(:create).call action_attributes)
 
           private
 
           def create_response(result)
-            if result.success?
-              create_success(result.value)
-            else
-              create_failure(result.failure)
-            end
+            return new_response(result.failure) if result.failure?
+
+            create_success(result.value)
           end
 
-          def create_success(model)
+          def create_success(success)
+            model = success.fetch(:model)
             flash[:notice] = "Created #{Human[model]}"
 
             respond_to do |format|
-              format.turbo_stream { render :create, locals: { **action_locals, model: model } }
-              format.html { redirect_to url_for(respond_to?(:show) ? { id: model.id } : { action: :index }) }
+              format.turbo_stream { render 'create', locals: { **locals, **success } }
+              format.html { redirect_to_model_or_index(model) }
             end
-          end
-
-          def create_failure(input)
-            render :new, locals: { **action_locals, input: input }
           end
         end
 
         module Update
-          def update
-            update_response action(:update).call(params[:id], action_attributes)
-          end
+          def update = update_response(action(:update).call params[:id], attributes)
 
           private
 
           def update_response(result)
-            if result.success?
-              update_success(result.value)
-            else
-              update_failure(result.failure)
-            end
+            return edit_response(result.failure) if result.failure?
+
+            update_success(result.value)
           end
 
-          def update_success(model)
+          def update_success(success)
+            model = success.fetch(:model)
             flash[:notice] = "Updated #{Human[model]}"
 
             respond_to do |format|
-              format.turbo_stream { render :update, locals: { **action_locals, model: model } }
-              format.html { redirect_to url_for(respond_to?(:show) ? { id: model.id } : { action: :index }) }
+              format.turbo_stream { render 'update', locals: { **locals, **success } }
+              format.html { redirect_to_model_or_index(model) }
             end
-          end
-
-          def update_failure(failure)
-            render :edit, locals: { **action_locals, input: failure.input, model: failure.model }
           end
         end
 
         module Destroy
-          def destroy
-            destroy_response action(:destroy).call(params[:id])
-          end
+          def destroy = destroy_response(action(:destroy).call params[:id])
 
           private
 
           def destroy_response(result)
-            if result.success?
-              destroy_success(result.value)
-            else
-              destroy_failure(result.failure)
-            end
+            return destroy_failure(result.failure) if result.failure?
+
+            destroy_success(result.value)
           end
 
-          def destroy_success(model)
+          def destroy_success(success)
+            model = success.fetch(:model)
             flash[:notice] = "Destroyed #{Human[model]}"
 
             respond_to do |format|
-              format.turbo_stream { render :destroy, locals: { **action_locals, model: model } }
+              format.turbo_stream { render 'destroy', locals: { **locals, **success } }
               format.html { redirect_to url_for(action: :index) }
             end
           end
 
           def destroy_failure(failure)
-            flash[:alert] = "Destroy failed: #{Human[failure.errors]}"
+            input = failure.fetch(:input)
+            flash[:alert] = "Destroy failed: #{Human[input.errors]}"
 
             respond_to do |format|
-              format.turbo_stream { render :destroy_failure, locals: { **action_locals, model: failure.model } }
+              format.turbo_stream { render :destroy_failure, locals: { **locals, **failure } }
               format.html { redirect_to url_for(action: :index) }
             end
           end
