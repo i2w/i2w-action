@@ -32,8 +32,8 @@ module I2w
 
       def locals = { model_class: model_class }
 
-      def redirect_to_model_or_index(model)
-        redirect_to url_for(respond_to?(:show) ? { id: model.id } : { action: :index })
+      def redirect_to_model_or_index(hash)
+        redirect_to url_for(respond_to?(:show) ? { id: hash[:model].id } : { action: :index })
       end
     end
   end

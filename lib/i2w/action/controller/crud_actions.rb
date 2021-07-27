@@ -56,7 +56,7 @@ module I2w
         end
 
         module Create
-          def create = create_response(action(:create).call action_attributes)
+          def create = create_response(action(:create).call attributes)
 
           private
 
@@ -72,7 +72,7 @@ module I2w
 
             respond_to do |format|
               format.turbo_stream { render 'create', locals: { **locals, **success } }
-              format.html { redirect_to_model_or_index(model) }
+              format.html { redirect_to_model_or_index(success) }
             end
           end
         end
@@ -94,7 +94,7 @@ module I2w
 
             respond_to do |format|
               format.turbo_stream { render 'update', locals: { **locals, **success } }
-              format.html { redirect_to_model_or_index(model) }
+              format.html { redirect_to_model_or_index(success) }
             end
           end
         end
