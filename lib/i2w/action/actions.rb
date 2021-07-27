@@ -40,7 +40,7 @@ module I2w
         def call(id)
           hash_result do |h|
             h[:model] = repo.find(id: id)
-            h[:input] = input_class.new(**model)
+            h[:input] = input_class.new(h[:model])
           end
         end
       end
@@ -51,7 +51,6 @@ module I2w
         def call(attributes)
           hash_result do |h|
             h[:input] = validate(attributes)
-
             h[:model, :input] = repo.create input: h[:input]
           end
         end
@@ -64,7 +63,6 @@ module I2w
           hash_result do |h|
             h[:model] = repo.find id: id
             h[:input] = validate(attributes)
-
             h[:model, :input] = repo.update id: id, input: h[:input]
           end
         end
