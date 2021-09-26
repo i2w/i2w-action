@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 
   s.authors     = ["Ian White"]
   s.email       = ["ian.w.white@gmail.com"]
-  
+
   s.homepage    = "https://github.com/i2w/i2w-action"
   s.summary     = "Summary of I2w::Action."
   s.description = "Description of I2w::Action."
@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  s.add_dependency "rails", "~> 6.1.3"
+  s.add_dependency "rails", ">= 6.1.3"
 end

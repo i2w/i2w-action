@@ -17,21 +17,21 @@ module I2w
       # Default implementation of the index action, returns HashResult with :model
       module Index
         def call
-          hash_result { |h| h[:models] = repo.all }
+          hash_result models: repo.all
         end
       end
 
       # Default implementation of the new action, returns HashResult with :model
       module Show
         def call(id)
-          hash_result { |h| h[:model] = repo.find id: id }
+          hash_result model: repo.find(id: id)
         end
       end
 
       # Default implementation of the new action returns HashResult with :input
       module New
         def call
-          hash_result { |h| h[:input] = input_class.new }
+          hash_result input: input_class.new
         end
       end
 
