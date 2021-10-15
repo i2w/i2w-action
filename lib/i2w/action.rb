@@ -29,8 +29,6 @@ module I2w
       @input_class = input_class
     end
 
-    delegate :success, :failure, :match, :hash_result, to: Result
-
     private
 
     attr_reader :repository_class, :input_class

@@ -16,63 +16,71 @@ module I2w
     module Actions
       # Default implementation of the index action, returns HashResult with :model
       module Index
+        prepend Result::Call
+
         def call
-          hash_result models: repo.all
+          result.models = repo.all
         end
       end
 
       # Default implementation of the new action, returns HashResult with :model
       module Show
+        prepend Result::Call
+
         def call(id)
-          hash_result model: repo.find(id: id)
+          result.model = repo.find(id: id)
         end
       end
 
       # Default implementation of the new action returns HashResult with :input
       module New
+        prepend Result::Call
+
         def call
-          hash_result input: input_class.new
+          result.input = input_class.new
         end
       end
 
       # Default implementation of the edit action returns HashResult with :model, :input
       module Edit
+        prepend Result::Call
+
         def call(id)
-          hash_result do |h|
-            h[:model] = repo.find(id: id)
-            h[:input] = input_class.new(h[:model])
-          end
+          result.model = repo.find(id: id)
+          result.input = input_class.new(result.model)
         end
       end
 
       # default implementation of the create action,
-      # returns HashResult with :model on success, :model and :input on failure
+      # returns OpenResult with :model on success, :model and :input on failure
       module Create
+        prepend Result::Call
+
         def call(attributes)
-          hash_result do |h|
-            h[:input] = validate(attributes)
-            h[:model, :input] = repo.create input: h[:input]
-          end
+          result.input = validate(attributes)
+          result[:model, :input] = repo.create input: result.input
         end
       end
 
       # Default implementation of the update action,
-      # returns HashResult with :model on success, :model and :input on failure
+      # returns OpenResult with :model on success, :model and :input on failure
       module Update
+        prepend Result::Call
+
         def call(id, attributes)
-          hash_result do |h|
-            h[:model] = repo.find id: id
-            h[:input] = validate(attributes)
-            h[:model, :input] = repo.update id: id, input: h[:input]
-          end
+          result.model = repo.find id: id
+          result.input = validate(attributes)
+          result[:model, :input] = repo.update id: id, input: result.input
         end
       end
 
       # Default implementation of the destroy action,
       # returns HashResult with :model on success, :input on failure
       module Destroy
+        prepend Result::Call
+
         def call(id)
-          hash_result { |h| h[:model, :input] = repo.destroy id: id }
+          result[:model, :input] = repo.destroy id: id
         end
       end
     end
