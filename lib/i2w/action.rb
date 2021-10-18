@@ -12,6 +12,8 @@ require_relative 'action/stream_action'
 module I2w
   # Base class for actions
   class Action
+    include Result::SetResult
+
     Repo.register_class self, :action, accessors: %i[repository input] do
       def group_name = name.deconstantize.singularize
 
