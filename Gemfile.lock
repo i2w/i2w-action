@@ -22,7 +22,7 @@ GIT
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: e6ae0bc84ded7bd59bf1d6a9e315433d02585cb8
+  revision: 2c830f672e9e52852abc75e746992764e002afa9
   branch: main
   specs:
     i2w-result (0.1.0)
@@ -120,7 +120,7 @@ GEM
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)

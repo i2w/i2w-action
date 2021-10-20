@@ -3,6 +3,7 @@
 require 'i2w/result'
 require 'i2w/repo'
 require_relative 'stream'
+require_relative 'action/callbacks'
 require_relative 'action/controller'
 require_relative 'action/version'
 require_relative 'action/actions'
@@ -13,6 +14,7 @@ module I2w
   # Base class for actions
   class Action
     include Result::SetResult
+    include Callbacks
 
     Repo.register_class self, :action, accessors: %i[repository input] do
       def group_name = name.deconstantize.singularize
@@ -25,6 +27,8 @@ module I2w
     class << self
       def call(...) = new.call(...)
     end
+
+    delegate :success, :failure, :wrap, to: Result
 
     def initialize(repository_class: self.class.repository_class, input_class: self.class.input_class)
       @repository_class = repository_class
