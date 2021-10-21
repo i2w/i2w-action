@@ -61,14 +61,20 @@ module I2w
         assert_enqueued_jobs 0
       end
 
-      test 'nested call async calls enqueues multiple job' do
+      test 'call_async' do
+        perform_enqueued_jobs do
+          CallAsyncAction.call_async(:foo)
+        end
+        assert_equal [[:call_async, :foo], [:subsidiary, :foo]], SideEffects.to_a
+      end
+
+      test 'nested call async calls enqueues multiple jobs' do
         assert_enqueued_jobs 1 do
           CallLaterAction.call_async(:foo)
         end
 
         perform_enqueued_jobs
         assert_enqueued_jobs 1
-        perform_enqueued_jobs
       end
     end
   end
