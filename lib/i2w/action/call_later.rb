@@ -4,13 +4,19 @@ module I2w
   class Action
     # extend into Actions to add #call_later, #call_async methods to the action, which performs the action via active job
     module CallLater
-      def within_call_later? = Thread.current[:within_call_later]
-
       # Nested #call_later calls will run inside the same process (will not schedule new action jobs)
-      def call_later(...) = within_call_later? ? call(...) : CallLaterJob.perform_later(self, ...)
+      def call_later(...)
+        if Thread.current[:within_call_later]
+          call(...)
+        else
+          CallLaterJob.perform_later(self, ...)
+        end
+      end
 
       # Nested #call_async calls will always schedule a new active job
-      def call_async(...) = CallAsyncJob.perform_later(self, ...)
+      def call_async(...)
+        CallAsyncJob.perform_later(self, ...)
+      end
 
       class CallLaterJob < ActiveJob::Base
         def perform(action_class, ...)
