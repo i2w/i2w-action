@@ -10,6 +10,16 @@ module I2w
           include Controller
         end
 
+        private
+
+        def locals = { model_class: model_class }
+
+        def redirect_to_model_or_index(hash) = respond_to?(:show) ? redirect_to_model(hash) : redirect_to_index(hash)
+
+        def redirect_to_model(hash) = redirect_to(url_for id: hash[:model].id)
+
+        def redirect_to_index(_hash) = redirect_to(url_for action: :index)
+
         module ClassMethods
           def crud_actions(model_class = nil, repository_class: nil, input_class: nil, only: nil, except: nil)
             self.model_class = model_class unless model_class.nil?

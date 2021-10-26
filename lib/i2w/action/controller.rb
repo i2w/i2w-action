@@ -20,9 +20,11 @@ module I2w
 
       def action(action_name = self.action_name) = action_class(action_name).new(**dependencies)
 
-      def dependencies
-        { repository_class: repository_class, input_class: input_class }
+      def render_action(action_name = self.action_name, *args)
+        render action_name, locals: { **locals, **action(action_name).call(*args) }
       end
+
+      def dependencies = { repository_class: repository_class, input_class: input_class }
 
       def attributes(input_class = self.input_class)
         params.require(input_class.model_name.param_key).permit(*input_class.attribute_names)
@@ -30,13 +32,7 @@ module I2w
         {}
       end
 
-      def locals = { model_class: model_class }
-
-      def redirect_to_model_or_index(hash) = respond_to?(:show) ? redirect_to_model(hash) : redirect_to_index(hash)
-
-      def redirect_to_model(hash) = redirect_to(url_for id: hash[:model].id)
-
-      def redirect_to_index(_hash) = redirect_to(url_for action: :index)
+      def locals = {}
     end
   end
 end
