@@ -18,10 +18,10 @@ module I2w
 
       private
 
-      def action(action_name = self.action_name) = action_class(action_name).new(**dependencies)
+      def action(action_name) = action_class(action_name).new(**dependencies)
 
-      def render_action(action_name = self.action_name, *args)
-        render action_name, locals: { **locals, **action(action_name).call(*args) }
+      def render_action(action_name, ...)
+        render action_name, locals: { **locals, **action(action_name).call(...) }
       end
 
       def dependencies = { repository_class: repository_class, input_class: input_class }
