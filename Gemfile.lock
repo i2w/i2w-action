@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/i2w/i2w-data_object.git
-  revision: 1ad5c149bc41ce892bbf24580bad89b6585fbdf5
+  revision: 15cdfdff9794d0c3c5cb791e599d246670151c4c
   branch: main
   specs:
     i2w-data_object (0.1.0)
 
 GIT
   remote: https://github.com/i2w/i2w-human.git
-  revision: 27e1234b3afe40592f211c6470d6a92f400e47c1
+  revision: c9418f31b82ce76f9a478d1631634caf954f16f6
   branch: main
   specs:
     i2w-human (0.1.0)
@@ -15,17 +15,18 @@ GIT
 
 GIT
   remote: https://github.com/i2w/i2w-repo.git
-  revision: fce0a84ee5c92c08b7242e77c639089b61c0c0a4
+  revision: d233805de856409997c141c116c89454863840ce
   branch: main
   specs:
     i2w-repo (0.1.0)
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: 2c830f672e9e52852abc75e746992764e002afa9
+  revision: 97b91010948f783659fd9ee150981d4076bacd55
   branch: main
   specs:
     i2w-result (0.1.0)
+      activemodel (>= 6)
 
 PATH
   remote: .
@@ -103,7 +104,7 @@ GEM
     erubi (1.10.0)
     globalid (0.5.2)
       activesupport (>= 5.0)
-    i18n (1.8.10)
+    i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     loofah (2.12.0)
       crass (~> 1.0.2)
@@ -169,7 +170,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.4.2)
+    zeitwerk (2.5.1)
 
 PLATFORMS
   x86_64-darwin-20
