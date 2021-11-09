@@ -22,7 +22,7 @@ GIT
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: 97b91010948f783659fd9ee150981d4076bacd55
+  revision: c92e78f2a14a6159458faf871393c8acd10c19bb
   branch: main
   specs:
     i2w-result (0.1.0)
