@@ -23,7 +23,7 @@ module I2w
 
       # Default implementation of the new action, returns HashResult with :model
       module Show
-        def set_result(result, id)
+        def set_result(result, id:)
           result.model = repo.find(id: id)
         end
       end
@@ -37,7 +37,7 @@ module I2w
 
       # Default implementation of the edit action returns HashResult with :model, :input
       module Edit
-        def set_result(result, id)
+        def set_result(result, id:)
           result.model = repo.find(id: id)
           result.input = input_class.new(result.model)
         end
@@ -46,8 +46,8 @@ module I2w
       # default implementation of the create action,
       # returns OpenResult with :model on success, :model and :input on failure
       module Create
-        def set_result(result, attributes)
-          result.input = validate(attributes)
+        def set_result(result, input:)
+          result.input = validate(input)
           result[:model, :input] = repo.create input: result.input
         end
       end
@@ -55,9 +55,9 @@ module I2w
       # Default implementation of the update action,
       # returns OpenResult with :model on success, :model and :input on failure
       module Update
-        def set_result(result, id, attributes)
+        def set_result(result, id:, input:)
           result.model = repo.find id: id
-          result.input = validate(attributes)
+          result.input = validate(input)
           result[:model, :input] = repo.update id: id, input: result.input
         end
       end
@@ -65,7 +65,7 @@ module I2w
       # Default implementation of the destroy action,
       # returns HashResult with :model on success, :input on failure
       module Destroy
-        def set_result(result, id)
+        def set_result(result, id:)
           result[:model, :input] = repo.destroy id: id
         end
       end

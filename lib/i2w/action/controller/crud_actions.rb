@@ -42,7 +42,7 @@ module I2w
         end
 
         module Show
-          def show = show_response(action(:show).call params[:id])
+          def show = show_response(action(:show).call id: params[:id])
 
           private
 
@@ -58,7 +58,7 @@ module I2w
         end
 
         module Edit
-          def edit = edit_response(action(:edit).call params[:id])
+          def edit = edit_response(action(:edit).call id: params[:id])
 
           private
 
@@ -66,7 +66,7 @@ module I2w
         end
 
         module Create
-          def create = create_response(action(:create).call attributes)
+          def create = create_response(action(:create).call input: attributes)
 
           private
 
@@ -88,7 +88,7 @@ module I2w
         end
 
         module Update
-          def update = update_response(action(:update).call params[:id], attributes)
+          def update = update_response(action(:update).call id: params[:id], input: attributes)
 
           private
 
@@ -110,7 +110,7 @@ module I2w
         end
 
         module Destroy
-          def destroy = destroy_response(action(:destroy).call params[:id])
+          def destroy = destroy_response(action(:destroy).call id: params[:id])
 
           private
 

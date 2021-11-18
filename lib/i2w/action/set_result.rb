@@ -9,19 +9,21 @@ module I2w
     module SetResult
       def call(*args, **kwargs)
         open_result do |result|
-          before_set_result(result, args, kwargs)
-          set_result(result, *args, **kwargs)
+          unprocessed_kwargs = before_set_result(result, kwargs)
+          unprocessed_kwargs = kwargs unless unprocessed_kwargs.is_a?(Hash)
+          set_result(result, *args, **unprocessed_kwargs)
         end
       end
 
       private
 
-      # process any arguments, perhaps adding to the result. You can mutate the arguments (and the result)
-      # before they are passed to #set_result
-      def before_set_result(_result, _args, _kwargs); end
+      # process any arguments, perhaps adding to the result. You can mutate the kwargs (and the result)
+      # before they are passed to #set_result, or
+      # if you don't want to mutate kwargs, you can return the unprocessed kwargs hash
+      def before_set_result(_result, _kwargs); end
 
-      def set_result(_result, *args, **kwargs)
-        raise ArgumentError, "unprocessed arguments: #{args} #{kwargs}" if args.any? || kwargs.any?
+      def set_result(_result, **kwargs)
+        raise ArgumentError, "unprocessed arguments: #{kwargs}" if kwargs.any?
       end
     end
   end
