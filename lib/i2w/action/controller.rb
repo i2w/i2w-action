@@ -28,10 +28,12 @@ module I2w
       def dependencies = { repository_class: repository_class, input_class: input_class }
 
       def attributes(input_class = self.input_class)
-        params.require(input_class.model_name.param_key).permit(*input_class.attribute_names)
+        params.require(input_class.model_name.param_key).permit(*input_class.attribute_names).to_h.symbolize_keys
       rescue ActionController::ParameterMissing
         {}
       end
+
+      def parameters(*keys) = params.permit(*keys).to_h.symbolize_keys
 
       def locals = {}
     end
