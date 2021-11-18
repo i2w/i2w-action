@@ -15,6 +15,7 @@ require_relative 'action/stream_action'
 module I2w
   # Base class for actions
   class Action
+    include I2w::Result
     include SetResult
     include Callbacks
     extend CallLater
@@ -30,8 +31,6 @@ module I2w
     class << self
       def call(...) = new.call(...)
     end
-
-    delegate :success, :failure, :wrap, to: Result
 
     def initialize(repository_class: self.class.repository_class, input_class: self.class.input_class)
       @repository_class = repository_class
