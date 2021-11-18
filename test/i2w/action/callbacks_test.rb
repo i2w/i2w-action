@@ -28,7 +28,7 @@ module I2w
       end
 
       class FooAction < CallbacksAction
-        def set_result(result, arg)
+        def set_result(result, arg:)
           result.has_foo = true if arg.include?('foo')
           result[:bar, :error] = bar_in_arg(arg)
           result[:last] = true
@@ -41,7 +41,7 @@ module I2w
 
       test 'successful action with callbacks' do
         action = FooAction.new
-        result = action.call('foobar')
+        result = action.call(arg: 'foobar')
 
         assert result.success?
         assert OpenStruct.new(has_foo: true, bar: 'foobar', last: true), result.value
@@ -50,7 +50,7 @@ module I2w
 
       test 'failed action with callbacks' do
         action = FooAction.new
-        result = action.call('foo')
+        result = action.call(arg: 'foo')
 
         refute result.success?
         assert OpenStruct.new(has_foo: true, error: 'no bar'), result.failure

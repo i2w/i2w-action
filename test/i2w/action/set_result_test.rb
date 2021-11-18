@@ -6,7 +6,7 @@ module I2w
 
         attr_reader :success_side_effect
 
-        def set_result(result, arg)
+        def set_result(result, arg:)
           result.arg = arg
           result[:yes, :no] = arg == :foo ? Result.success(arg) : Result.failure(arg)
           result.last = Result.success(:finished)
@@ -17,7 +17,7 @@ module I2w
 
       test "ReturnResult class returns OpenResult, and stop on first failure" do
         action = ReturnResult.new
-        actual = action.call(:foo)
+        actual = action.call(arg: :foo)
         assert actual.success?
         assert_equal :foo, actual.arg
         assert_equal :foo, actual.yes
@@ -27,7 +27,7 @@ module I2w
         assert action.success_side_effect
 
         action = ReturnResult.new
-        actual = action.call(:bar)
+        actual = action.call(arg: :bar)
         assert actual.failure?
         assert_equal({ arg: :bar }, actual.successes)
         assert_equal({ no: :bar }, actual.failures)
