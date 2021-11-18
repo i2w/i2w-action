@@ -9,18 +9,17 @@ module I2w
     module SetResult
       def call(*args)
         open_result do |result|
-          process_args_before_set_result(result, *args) do |*unprocessed_args|
-            set_result(result, *unprocessed_args)
-          end
+          unprocessed_args = process_args_before_set_result(result, *args)
+          set_result(result, *unprocessed_args)
         end
       end
 
       private
 
-      # process any arguments, perhaps adding to the result.  Yield any unprocessed args
-      def process_args_before_set_result(_result, *args) = yield(*args)
+      # process any arguments, perhaps adding to the result.  returns any unprocessed args
+      def process_args_before_set_result(_result, *args) = args
 
-      def set_result(result, *args)
+      def set_result(_result, *args)
         raise ArgumentError, "unprocessed arguments: #{args}" if args.any?
       end
     end
