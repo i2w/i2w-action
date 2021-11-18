@@ -5,19 +5,20 @@ module I2w
     # failure will exit early
     #
     # If you want to process some arguments, and setup the result accordingly, perhaps in a superclass or mixin,
-    # then use #process_args_before_set_result, which yields the unprocessed arguments
+    # then use #before_set_result, which is allowed to mutate the arguments array
     module SetResult
       def call(*args)
         open_result do |result|
-          unprocessed_args = process_args_before_set_result(result, *args)
-          set_result(result, *unprocessed_args)
+          before_set_result(result, args)
+          set_result(result, *args)
         end
       end
 
       private
 
-      # process any arguments, perhaps adding to the result.  returns any unprocessed args
-      def process_args_before_set_result(_result, *args) = args
+      # process any arguments, perhaps adding to the result. You can mutate the arguments (and the result)
+      # before they are passed to #set_result
+      def before_set_result(_result, _args); end
 
       def set_result(_result, *args)
         raise ArgumentError, "unprocessed arguments: #{args}" if args.any?
