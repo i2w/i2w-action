@@ -33,7 +33,7 @@ module I2w
         {}
       end
 
-      def parameters(*keys, **defaults) = { **defaults, **params.permit(*keys).to_h.symbolize_keys }
+      def parameters(*keys, **defaults) = { **defaults, **params.permit(*keys, *defaults.keys).to_h.symbolize_keys }
 
       def locals = {}
     end
