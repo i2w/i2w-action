@@ -15,14 +15,14 @@ GIT
 
 GIT
   remote: https://github.com/i2w/i2w-repo.git
-  revision: d233805de856409997c141c116c89454863840ce
+  revision: 65e3cce7f0c737a34b15e7ee8e2f05196d6ba64f
   branch: main
   specs:
     i2w-repo (0.1.0)
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: c92e78f2a14a6159458faf871393c8acd10c19bb
+  revision: 277c49862188f0a61b277737a204fd64fcbced7f
   branch: main
   specs:
     i2w-result (0.1.0)
@@ -159,9 +159,9 @@ GEM
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    sprockets-rails (3.2.2)
-      actionpack (>= 4.0)
-      activesupport (>= 4.0)
+    sprockets-rails (3.4.0)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     thor (1.1.0)
     tty-screen (0.8.1)
@@ -184,4 +184,4 @@ DEPENDENCIES
   ruby_jard
 
 BUNDLED WITH
-   2.2.15
+   2.2.22

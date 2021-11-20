@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'controller/crud_actions'
-require_relative 'controller/raise_failure'
 
 module I2w
   class Action
