@@ -20,8 +20,8 @@ module I2w
 
       def action(action_name) = action_class(action_name).new(**dependencies)
 
-      def render_action(action_name, ...)
-        render action_name.to_s, locals: { **locals, **action(action_name).call(...) }
+      def render_action(action_name, template_name = action_name, **kwargs)
+        render template_name.to_s, locals: { **locals, **action(action_name).call(**kwargs) }
       end
 
       def dependencies = { repository_class: repository_class, input_class: input_class }
