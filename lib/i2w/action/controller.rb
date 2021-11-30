@@ -50,12 +50,12 @@ module I2w
       # override this to add to the locals that are passed to render in #render_action
       def locals = {}
 
-      # use this in an action to handle success or failure results
+      # use #match in an action to respond differently to success or failure results
       #
       # match action(:create).call(input: attributes) do |on|
       #   on.success         { redirect_to _1.widget }
-      #   on.failure(:input) { render 'new', locals: { input: _1.input } }
-      #   on.failure         { render 'error', **_1 }
+      #   on.failure(:input) { render 'new', locals: _1 }
+      #   on.failure         { render 'error', locals: _1 }
       # end
       def match(...) = I2w::Result.match(...)
     end

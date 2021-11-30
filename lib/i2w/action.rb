@@ -9,7 +9,6 @@ require_relative 'action/set_result'
 require_relative 'action/controller'
 require_relative 'action/version'
 require_relative 'action/actions'
-require_relative 'action/transaction'
 require_relative 'action/stream_action'
 
 module I2w
