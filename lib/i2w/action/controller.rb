@@ -9,6 +9,8 @@ module I2w
       extend ActiveSupport::Concern
 
       included do
+        extend Action::Dependencies
+
         Repo.register_class self, accessors: %i[repository input model action] do
           def group_name = name.sub(/Controller\z/, '').singularize
         end
@@ -26,8 +28,11 @@ module I2w
         render template_name.to_s, locals: { **locals, **action(action_name).call(**kwargs) }
       end
 
-      # the arguments used to instantiate an Action class for this controller
-      def dependencies = { repository_class: repository_class, input_class: input_class }
+      # the arguments used to instantiate an Action class for this controller, including any declared on the
+      # controller
+      def dependencies
+        { repository_class: repository_class, input_class: input_class, **self.class.resolve_dependencies(self) }
+      end
 
       # given an input class, return the attributes as a hash from #params for the input
       def attributes(input_class = self.input_class)
