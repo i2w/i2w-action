@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
+require 'i2w/data_object'
 require 'i2w/result'
 require 'i2w/repo'
-require_relative 'stream'
+
 require_relative 'action/callbacks'
 require_relative 'action/call_later'
 require_relative 'action/set_result'
 require_relative 'action/controller'
 require_relative 'action/version'
 require_relative 'action/actions'
-require_relative 'action/stream_action'
+
+# require_relative 'stream'
+# require_relative 'action/stream_action'
 
 module I2w
   # Base class for actions
@@ -27,13 +30,36 @@ module I2w
       end
     end
 
+    @dependencies = {}
+
     class << self
       def call(...) = new.call(...)
+
+      attr_reader :dependencies
+
+      private
+
+      def dependency(name, default)
+        dependencies[name] = default
+        private attr_reader name
+      end
+
+      def inherited(subclass)
+        super
+        subclass.instance_variable_set :@dependencies, dependencies.dup
+      end
     end
 
-    def initialize(repository_class: self.class.repository_class, input_class: self.class.input_class)
+    def initialize(repository_class: self.class.repository_class, input_class: self.class.input_class, **dependencies)
       @repository_class = repository_class
-      @input_class = input_class
+      @input_class      = input_class
+
+      unknown = (dependencies.keys - self.class.dependencies.keys)
+      raise ArgumentError, 'unknown kwargs: #{unknown}' if unknown.any?
+
+      self.class.dependencies.each do |key, default|
+        instance_variable_set "@#{key}", dependencies.fetch(key) { default.respond_to?(:call) ? default.call : default }
+      end
     end
 
     private

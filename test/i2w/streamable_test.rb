@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'i2w/stream'
 
 module I2w
   class StreamableTest < ActiveSupport::TestCase
