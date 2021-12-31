@@ -63,10 +63,10 @@ module I2w
       end
 
       # Default implementation of the destroy action,
-      # returns HashResult with :model on success, :input on failure
+      # returns OpenResult with :model
       module Destroy
         def set_result(result, id:)
-          result[:model, :input] = repo.destroy id: id
+          result.model = repo.destroy(id: id)
         end
       end
     end
