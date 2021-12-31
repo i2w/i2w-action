@@ -27,6 +27,9 @@ module I2w
       class FooInput < Input
         attribute :bar
         attribute :baz
+
+        validates :bar, presence: true
+        validates :baz, presence: true
       end
 
       test 'input_class dependency' do
@@ -43,6 +46,15 @@ module I2w
         controller = FooController.new
         controller.params = { one: '1', 'two' => '2', three: 3 }
         assert_equal({ one: '1', two: '2', four: '4' }, controller.send(:parameters, :one, :two, four: '4'))
+      end
+
+      test '#h' do
+        assert_equal "Errors: Bar can't be blank, Baz can't be blank",
+                     FooController.new.send(:h, FooInput.new.tap(&:valid?).errors)
+      end
+
+      test 'NoArg is in scope' do
+        assert_equal FooController::NoArg, I2w::NoArg
       end
 
       class FooControllerTest < ActionController::TestCase

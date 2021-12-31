@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'i2w/human'
+require 'i2w/no_arg'
 require_relative 'controller/crud_actions'
 require_relative 'controller/result_match_filter'
 
@@ -7,11 +9,11 @@ module I2w
   class Action
     # mixin for Rails controllers to help with using actions
     module Controller
+      NoArg = I2w::NoArg
+
       extend ActiveSupport::Concern
 
       included do
-        NoArg = I2w::NoArg
-
         extend Dependencies
 
         # use result { |on| on.failure { ... } } to declare how a controller should handle unmatched results
