@@ -10,6 +10,8 @@ module I2w
       extend ActiveSupport::Concern
 
       included do
+        NoArg = I2w::NoArg
+
         extend Dependencies
 
         # use result { |on| on.failure { ... } } to declare how a controller should handle unmatched results
@@ -44,6 +46,8 @@ module I2w
           subclass.instance_variable_set :@result_match_handlers, result_match_handlers.dup
         end
       end
+
+      def h(...) = I2w::Human.call(...)
 
       # given an input class, return the attributes as a hash from #params for the input
       def attributes(input_class = self.input_class)
