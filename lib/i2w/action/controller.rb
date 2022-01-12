@@ -73,7 +73,7 @@ module I2w
 
       # call the action, and yield the block to success, use this when you don't need to handle failure
       def call_action(action_name, **kwargs, &success)
-        on_result action(action_name).call(**kargs) do |on|
+        on_result action(action_name).call(**kwargs) do |on|
           on.success(&success)
         end
       end
