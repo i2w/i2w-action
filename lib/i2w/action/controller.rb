@@ -71,6 +71,13 @@ module I2w
       # instantiate (with #dependencies) an Action class based on conventional group naming
       def action(action_name) = action_class(action_name).new(**action_dependencies)
 
+      # call the action, and yield the block to success, use this when you don't need to handle failure
+      def call_action(action_name, **kwargs, &success)
+        on_result action(action_name).call(**kargs) do |on|
+          on.success(&success)
+        end
+      end
+
       # call the action, and render the result, use this when you don't need to handle failure
       def render_action(action_name, template_name = action_name, **kwargs)
         render_result template_name, action(action_name).call(**kwargs)
