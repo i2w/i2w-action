@@ -71,23 +71,24 @@ module I2w
       # instantiate (with #dependencies) an Action class based on conventional group naming
       def action(action_name) = action_class(action_name).new(**action_dependencies)
 
-      # call the action, and yield the block to success, use this when you don't need to handle failure
-      def call_action(action_name, **kwargs, &success)
-        on_result action(action_name).call(**kwargs) do |on|
-          on.success(&success)
-        end
-      end
-
       # call the action, and render the result, use this when you don't need to handle failure
       def render_action(action_name, template_name = action_name, **kwargs)
         render_result template_name, action(action_name).call(**kwargs)
       end
 
+      # call the action, and yield the block to success, use this when you don't need to handle failure
+      def call_action(action_name, **kwargs, &success)
+        on_success action(action_name).call(**kwargs), &success
+      end
+
       # render successful result with the template_name
       def render_result(template_name, result)
-        on_result result do |on|
-          on.success { render_template template_name, _1 }
-        end
+        on_success(result) { render_template template_name, _1 }
+      end
+
+      # yield the block on result success, otherwise raise Result::NoMatchError
+      def on_success(result, &success)
+        on_result(result) { |on| on.success(&success) }
       end
 
       # render the template with an optional argument, which responds to #to_hash, with controller specified locals
@@ -95,7 +96,7 @@ module I2w
         render template_name.to_s, locals: { **locals, **hashy }
       end
 
-      # override this to add to the locals that are passed to render in #render_action
+      # override this to add to the locals that are passed to render in #render_action and #render_template
       def locals = {}
 
       # use #on_result in an action to respond differently to success or failure results
