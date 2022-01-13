@@ -72,13 +72,13 @@ module I2w
       def action(action_name) = action_class(action_name).new(**action_dependencies)
 
       # call the action, and render the result, use this when you don't need to handle failure
-      def render_action(action_name, template_name = action_name, **kwargs)
-        render_result template_name, action(action_name).call(**kwargs)
+      def render_action(action_name, template_name = action_name, *args)
+        render_result template_name, action(action_name).call(*args)
       end
 
       # call the action, and yield the block to success, use this when you don't need to handle failure
-      def call_action(action_name, **kwargs, &success)
-        on_success action(action_name).call(**kwargs), &success
+      def call_action(action_name, *args, &success)
+        on_success action(action_name).call(*args), &success
       end
 
       # render successful result with the template_name

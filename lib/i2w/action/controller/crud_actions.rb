@@ -55,7 +55,7 @@ module I2w
 
         module Show
           def show
-            render_action :show, **parameters(:id)
+            render_action :show, params[:id]
           end
         end
 
@@ -67,13 +67,13 @@ module I2w
 
         module Edit
           def edit
-            render_action :edit, **parameters(:id)
+            render_action :edit, params[:id]
           end
         end
 
         module Create
           def create
-            on_create_result action(:create).call(input: attributes)
+            on_create_result action(:create).call(attributes)
           end
 
           private
@@ -98,7 +98,7 @@ module I2w
 
         module Update
           def update
-            on_update_result action(:update).call(input: attributes, **parameters(:id))
+            on_update_result action(:update).call(params[:id], attributes)
           end
 
           private
@@ -123,7 +123,7 @@ module I2w
 
         module Destroy
           def destroy
-            on_destroy_result action(:destroy).call(**parameters(:id))
+            on_destroy_result action(:destroy).call(params[:id])
           end
 
           private

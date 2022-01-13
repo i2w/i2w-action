@@ -7,21 +7,21 @@ module I2w
     # If you want to process some arguments, and setup the result accordingly, perhaps in a superclass or mixin,
     # then use #before_set_result, which must return any unprocessed kwargs.
     module SetResult
-      def call(**kwargs)
+      def call(*args)
         open_result do |result|
-          unprocessed_kwargs = before_set_result(result, **kwargs)
-          set_result(result, **unprocessed_kwargs)
+          unprocessed_args = before_set_result(result, *args)
+          set_result(result, *unprocessed_args)
         end
       end
 
       private
 
       # Process any arguments, perhaps mutating the result, before #set_result is called
-      # You must return any unprocessed kwargs, these will be passed to #set_result
-      def before_set_result(_result, **kwargs) = kwargs
+      # You must return any unprocessed args, these will be passed to #set_result
+      def before_set_result(_result, *args) = args
 
-      def set_result(_result, **kwargs)
-        raise ArgumentError, "unprocessed arguments: #{kwargs}" if kwargs.any?
+      def set_result(_result, *args)
+        raise ArgumentError, "unprocessed arguments: #{args}" if args.any?
       end
     end
   end
