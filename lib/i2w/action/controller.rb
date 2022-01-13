@@ -60,12 +60,6 @@ module I2w
         {}
       end
 
-      # slice the given keys from #params, with optional defaults filled in (returns hash)
-      def parameters(*keys, **defaults)
-        parameters = params.permit(*keys, *defaults.keys).to_h.symbolize_keys
-        { **defaults, **parameters }
-      end
-
       protected
 
       # instantiate (with #dependencies) an Action class based on conventional group naming
