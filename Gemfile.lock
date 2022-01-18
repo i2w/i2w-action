@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/i2w/i2w-data_object.git
-  revision: b897416cb7e44f93eefa539344feb472d7d46813
+  revision: 3988e5cc21798bd42df7b6edf74c9a5ce48cc341
   branch: main
   specs:
     i2w-data_object (0.1.0)
@@ -16,14 +16,14 @@ GIT
 
 GIT
   remote: https://github.com/i2w/i2w-repo.git
-  revision: 6e20895d1890c4daaa04d6b268f5cca6686623b0
-  branch: remove-kwargs
+  revision: d88175e4941082df0fee5b642074c1639a29a604
+  branch: main
   specs:
     i2w-repo (0.1.0)
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: 22a98da2968aaaed1a98aa59be6039a74cb89ac2
+  revision: 7b9e1a7ed9291c8c0deea118df754eea70fd9cb7
   branch: main
   specs:
     i2w-result (0.1.0)
@@ -140,7 +140,7 @@ GEM
       net-protocol
       timeout
     nio4r (2.5.8)
-    nokogiri (1.13.0-x86_64-darwin)
+    nokogiri (1.13.1-x86_64-darwin)
       racc (~> 1.4)
     pry (0.13.1)
       coderay (~> 1.1)
@@ -193,6 +193,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-darwin-21
 
 DEPENDENCIES
   i2w-action!
@@ -203,4 +204,4 @@ DEPENDENCIES
   ruby_jard
 
 BUNDLED WITH
-   2.2.22
+   2.2.32

@@ -60,25 +60,21 @@ module I2w
         {}
       end
 
-      # slice the given keys from #params, with optional defaults filled in (returns hash)
-      def parameters(*keys, **defaults)
-        parameters = params.permit(*keys, *defaults.keys).to_h.symbolize_keys
-        { **defaults, **parameters }
-      end
-
       protected
 
       # instantiate (with #dependencies) an Action class based on conventional group naming
       def action(action_name) = action_class(action_name).new(**action_dependencies)
 
-      # call the action, and render the result, use this when you don't need to handle failure
-      def render_action(action_name, template_name = action_name, *args)
-        render_result template_name, action(action_name).call(*args)
+      # call the named action, and render the named template, use this when you don't need to handle failure
+      def render_action(action_name, ...) = render_template_with_action(action_name, action_name, ...)
+
+      def render_template_with_action(template_name, action_name, ...)
+        render_result template_name, action(action_name).call(...)
       end
 
       # call the action, and yield the block to success, use this when you don't need to handle failure
-      def call_action(action_name, *args, &success)
-        on_success action(action_name).call(*args), &success
+      def call_action(action_name, *args, **kwargs, &success)
+        on_success action(action_name).call(*args, **kwargs), &success
       end
 
       # render successful result with the template_name

@@ -8,7 +8,7 @@ gemspec
 gem 'i2w-result', github: 'i2w/i2w-result', branch: 'main'
 gem 'i2w-human', github: 'i2w/i2w-human', branch: 'main'
 gem 'i2w-data_object', github: 'i2w/i2w-data_object', branch: 'main'
-gem 'i2w-repo', github: 'i2w/i2w-repo', branch: 'remove-kwargs'
+gem 'i2w-repo', github: 'i2w/i2w-repo', branch: 'main'
 
 # To use a debugger
 gem 'ruby_jard', group: [:development, :test]
