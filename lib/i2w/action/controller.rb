@@ -65,16 +65,19 @@ module I2w
       # instantiate (with #dependencies) an Action class based on conventional group naming
       def action(action_name) = action_class(action_name).new(**action_dependencies)
 
+      # if all of your actions share some keyword arguments, supply them here
+      def default_action_kwargs = {}
+
       # call the named action, and render the named template, use this when you don't need to handle failure
       def render_action(action_name, ...) = render_template_with_action(action_name, action_name, ...)
 
-      def render_template_with_action(template_name, action_name, ...)
-        render_result template_name, action(action_name).call(...)
+      def render_template_with_action(template_name, action_name, *args, **kwargs)
+        render_result template_name, action(action_name).call(*args, **default_action_kwargs, **kwargs)
       end
 
       # call the action, and yield the block to success, use this when you don't need to handle failure
       def call_action(action_name, *args, **kwargs, &success)
-        on_success action(action_name).call(*args, **kwargs), &success
+        on_success action(action_name).call(*args, **default_action_kwargs, **kwargs), &success
       end
 
       # render successful result with the template_name
