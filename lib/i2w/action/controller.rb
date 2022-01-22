@@ -80,7 +80,7 @@ module I2w
       # call the action, and yield the optional block to to_result
       def call_action(action_name, *args, **kwargs, &block)
         action(action_name).call(*args, **action_kwargs, **kwargs).tap do
-          on_result(result, &block) if block
+          on_result(_1, &block) if block
         end
       end
 
