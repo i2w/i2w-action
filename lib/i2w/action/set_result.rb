@@ -9,6 +9,8 @@ module I2w
           set_result(result, ...)
         end
       end
+
+      def set_result(result) = result
     end
   end
 end

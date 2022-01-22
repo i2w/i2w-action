@@ -73,17 +73,13 @@ module I2w
 
         module Create
           def create
-            on_create_result action(:create).call(attributes)
-          end
-
-          private
-
-          def on_create_result(result)
-            on_result result do |on|
+            call_action(:create, attributes) do |on|
               on.success { create_success _1 }
               on.failure { render_template :new, _1 }
             end
           end
+
+          private
 
           def create_success(success)
             model = success.fetch(:model)
@@ -98,17 +94,13 @@ module I2w
 
         module Update
           def update
-            on_update_result action(:update).call(params[:id], attributes)
-          end
-
-          private
-
-          def on_update_result(result)
-            on_result result do |on|
+            call_action(:update, params[:id], attributes) do |on|
               on.success { update_success _1 }
               on.failure { render_template :edit, _1 }
             end
           end
+
+          private
 
           def update_success(success)
             model = success.fetch(:model)
@@ -123,17 +115,13 @@ module I2w
 
         module Destroy
           def destroy
-            on_destroy_result action(:destroy).call(params[:id])
-          end
-
-          private
-
-          def on_destroy_result(result)
-            on_result do |on|
+            call_action(:destroy, params[:id]) do |on|
               on.success { destroy_success _1 }
               on.failure { destroy_failure _1 }
             end
           end
+
+          private
 
           def destroy_success(success)
             model = success.fetch(:model)
