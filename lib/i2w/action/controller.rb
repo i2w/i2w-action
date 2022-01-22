@@ -65,19 +65,28 @@ module I2w
       # instantiate (with #dependencies) an Action class based on conventional group naming
       def action(action_name) = action_class(action_name).new(**action_dependencies)
 
+      # call the named action, and render the named template, use this when you don't need to handle failure
+      def render_action(action_name, ...)
+        render_template_with_action(action_name, action_name, ...)
+      end
+
+      def render_template_with_action(template_name, action_name, ...)
+        render_result template_name, call_action(action_name, ...)
+      end
+
       # if all of your actions in a controller share some keyword arguments, you may supply them here
       def action_kwargs = {}
 
-      # call the named action, and render the named template, use this when you don't need to handle failure
-      def render_action(action_name, ...) = render_template_with_action(action_name, action_name, ...)
-
-      def render_template_with_action(template_name, action_name, *args, **kwargs)
-        render_result template_name, action(action_name).call(*args, **action_kwargs, **kwargs)
+      # call the action, and yield the optional block to to_result
+      def call_action(action_name, *args, **kwargs, &block)
+        action(action_name).call(*args, **action_kwargs, **kwargs).tap do
+          on_result(result, &block) if block
+        end
       end
 
-      # call the action, and yield the block to success, use this when you don't need to handle failure
-      def call_action(action_name, *args, **kwargs, &success)
-        on_success action(action_name).call(*args, **action_kwargs, **kwargs), &success
+      # call the action and handle success, use this when you don't need to handle failure
+      def call_action_success(*args, **kwargs, &success)
+        call_action(*args, **kwargs) { |on| on.success(&success) }
       end
 
       # render successful result with the template_name
@@ -87,7 +96,7 @@ module I2w
 
       # yield the block on result success, otherwise raise Result::NoMatchError
       def on_success(result, &success)
-        on_result(result) { |on| on.success(&success) }
+        on_result(result) { _1.success(&success) }
       end
 
       # render the template with an optional argument, which responds to #to_hash, with controller specified locals
