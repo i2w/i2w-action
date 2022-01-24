@@ -38,13 +38,6 @@ module I2w
     end
 
     # yield in a repository transaction, and automatically rollback if the result is a failure
-    def transaction
-      result = nil
-      repo.transaction do
-        result = yield
-        repo.rollback! if result.failure?
-      end
-      result
-    end
+    delegate :transaction, to: :repo
   end
 end
