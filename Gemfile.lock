@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/i2w/i2w-data_object.git
-  revision: 3988e5cc21798bd42df7b6edf74c9a5ce48cc341
+  revision: b3e4bc7e68c637827866c7d5b006f40ee5310f66
   branch: main
   specs:
     i2w-data_object (0.1.0)
@@ -16,14 +16,14 @@ GIT
 
 GIT
   remote: https://github.com/i2w/i2w-repo.git
-  revision: d88175e4941082df0fee5b642074c1639a29a604
+  revision: 73076b3d4a87bac516844d8fbeacc700cbc20826
   branch: main
   specs:
     i2w-repo (0.1.0)
 
 GIT
   remote: https://github.com/i2w/i2w-result.git
-  revision: 7b9e1a7ed9291c8c0deea118df754eea70fd9cb7
+  revision: 92d0edcab0bf30b3f359e8dad871fdaf9b781fda
   branch: main
   specs:
     i2w-result (0.1.0)
@@ -192,7 +192,6 @@ GEM
     zeitwerk (2.5.3)
 
 PLATFORMS
-  x86_64-darwin-20
   x86_64-darwin-21
 
 DEPENDENCIES
@@ -204,4 +203,4 @@ DEPENDENCIES
   ruby_jard
 
 BUNDLED WITH
-   2.2.32
+   2.3.5
