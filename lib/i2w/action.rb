@@ -36,8 +36,5 @@ module I2w
       input = input_class.new(input) unless input.respond_to?(:valid?)
       input.valid? ? success(input) : failure(input)
     end
-
-    # yield in a repository transaction, and automatically rollback if the result is a failure
-    delegate :transaction, to: :repo
   end
 end
