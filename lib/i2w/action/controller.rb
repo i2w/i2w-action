@@ -121,7 +121,7 @@ module I2w
 
       private
 
-      def action_class(action_name) = action_class_lookup(action_name).call(self.class)
+      def action_class(action_name) = action_class_lookup(action_name).resolve(self.class)
 
       # by default, UsersController#new will correspond to Users::NewAction, override this method with your
       # own scheme if necessary
