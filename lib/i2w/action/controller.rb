@@ -100,8 +100,8 @@ module I2w
       end
 
       # render the template with an optional argument, which responds to #to_hash, with controller specified locals
-      def render_template(template_name, hashy = {}, **opts)
-        render template_name.to_s, locals: { **locals, **hashy }, **opts
+      def render_template(template_name, hashy = {}, **kwargs)
+        render template_name.to_s, locals: { **locals, **hashy, **opts }
       end
 
       # override this to add to the locals that are passed to render in #render_action and #render_template
