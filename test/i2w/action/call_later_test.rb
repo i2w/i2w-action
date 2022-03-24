@@ -23,8 +23,10 @@ module I2w
       end
 
       class CallLaterAction < Action
+        dependency :dep, 'default'
+
         def call(arg)
-          SideEffects.push([:call_later, arg])
+          SideEffects.push([:call_later, arg, dep])
           SubsidiaryAction.call_later(arg)
           success(:ok)
         end
@@ -49,7 +51,14 @@ module I2w
         perform_enqueued_jobs do
           CallLaterAction.call_later(:foo)
         end
-        assert_equal [[:call_later, :foo], [:subsidiary, :foo]], SideEffects.to_a
+        assert_equal [[:call_later, :foo, 'default'], [:subsidiary, :foo]], SideEffects.to_a
+      end
+
+      test 'call_later setting dependencies' do
+        perform_enqueued_jobs do
+          CallLaterAction.call_later(:foo, dependencies: { dep: 'set' })
+        end
+        assert_equal [[:call_later, :foo, 'set'], [:subsidiary, :foo]], SideEffects.to_a
       end
 
       test 'nested call later calls only enqueues one job' do
